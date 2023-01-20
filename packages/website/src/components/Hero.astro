@@ -1,16 +1,29 @@
+---
+interface Props {
+  content?: string;
+  cta?: CtaModel;
+  subtitle?: string;
+  title: string;
+}
+
+const { content, cta, subtitle, title } = Astro.props;
+---
+
 <section class="relative grid place-content-center place-items-center overflow-hidden py-[8vw]">
   <div class="relative mx-auto w-full max-w-screen-2xl px-4 text-center">
-    <h1 class="pb-5 text-5xl font-bold">Full Stack Developer</h1>
-    <p class="mx-auto max-w-prose pb-8 text-lg">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-      laboris nisi ut aliquip ex ea commodo consequat.
-    </p>
-    <a
-      class="bg-primary-500 hover:bg-primary-400 inline-block scale-100 rounded py-3 px-5 text-base font-bold text-white subpixel-antialiased transition will-change-transform hover:scale-110"
-      href="/about"
-    >
-      Find out more
-    </a>
+    <h1 class="pb-5 text-5xl font-bold">{title}</h1>
+    {subtitle && <p class="pb-5 text-lg font-medium">{subtitle}</p>}
+    {content && <p class="mx-auto max-w-prose pb-8 text-lg">{content}</p>}
+    {
+      cta && (
+        <a
+          class="bg-primary-500 hover:bg-primary-400 inline-block scale-100 rounded py-3 px-5 text-base font-bold text-white subpixel-antialiased transition will-change-transform hover:scale-110"
+          href={cta.href}
+          target={cta.target}
+        >
+          {cta.text}
+        </a>
+      )
+    }
   </div>
 </section>

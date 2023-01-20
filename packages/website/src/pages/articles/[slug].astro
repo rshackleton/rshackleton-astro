@@ -1,5 +1,6 @@
 ---
-import { formatDate, formatDateISO } from '../../helpers/date';
+import Hero from '../../components/Hero.astro';
+import { formatDate } from '../../helpers/date';
 import Layout from '../../layouts/Layout.astro';
 import { getArticle, getArticles } from '../../sanity/articles';
 
@@ -11,9 +12,6 @@ export async function getStaticPaths() {
 const article = await getArticle(Astro.params.slug ?? '');
 ---
 
-<Layout title="Articles | Richard Shackleton">
-  <div>
-    <h1>{article.title}</h1>
-    <time datetime={formatDateISO(article.date)}>{formatDate(article.date)}</time>
-  </div>
+<Layout title={`${article.title}`}>
+  <Hero title={article.title} subtitle={formatDate(article.date)} />
 </Layout>

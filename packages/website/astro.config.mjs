@@ -31,6 +31,7 @@ export default defineConfig({
     react(),
     mdx(),
     sanity({
+      apiVersion: new Date().toISOString().substring(0, 10),
       dataset: process.env.SANITY_STUDIO_DATASET,
       projectId: process.env.SANITY_STUDIO_PROJECT_ID,
       useCdn: true,

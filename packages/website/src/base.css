@@ -4,6 +4,10 @@
 
 /* Custom rich text */
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   .rich-text {
     @apply text-left text-lg;
 

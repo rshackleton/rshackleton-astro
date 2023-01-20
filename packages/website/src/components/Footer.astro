@@ -1,5 +1,16 @@
 <footer class="flex place-content-center place-items-center items-center px-4 py-8">
   <p class="text-sm text-neutral-500">
-    &copy; Richard Shackleton {new Date().getUTCFullYear()}
+    <span>&copy; Richard Shackleton {new Date().getUTCFullYear()}</span>
+    <span>&nbsp;|&nbsp;</span>
+    <span>
+      Built with <a
+        class="hover:text-primary-700 underline"
+        href="https://astro.build/"
+        target="_blank"
+        rel="noopener"
+      >
+        {Astro.generator}
+      </a>
+    </span>
   </p>
 </footer>

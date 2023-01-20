@@ -1,7 +1,7 @@
 import { useSanityClient } from 'astro-sanity';
 import groq from 'groq';
 
-type ArticleModel = {
+export type ArticleModel = {
   id: string;
   date: string;
   slug: string;
@@ -9,18 +9,21 @@ type ArticleModel = {
   title: string;
 };
 
-export async function getArticles() {
+export async function getArticles(count: number = -1) {
   const client = useSanityClient();
 
-  const data = await client.fetch(groq`
-    *[_type == "article"] {
-      "id": _id,
-      date,
-      "slug": slug.current,
-      summary,
-      title,
-    } | order(date desc)
-  `);
+  const data = await client.fetch(
+    groq`
+      *[_type == "article"] {
+        "id": _id,
+        date,
+        "slug": slug.current,
+        summary,
+        title,
+      } | order(date desc)[0...$count]
+    `,
+    { count },
+  );
 
   return data as ArticleModel[];
 }
@@ -30,14 +33,14 @@ export async function getArticle(slug: string) {
 
   const data = await client.fetch(
     groq`
-    *[_type == "article" && slug.current == $slug][0] {
-      "id": _id,
-      banner,
-      content,
-      date,
-      title,
-    }
-  `,
+      *[_type == "article" && slug.current == $slug][0] {
+        "id": _id,
+        banner,
+        content,
+        date,
+        title,
+      }
+    `,
     { slug },
   );
 
