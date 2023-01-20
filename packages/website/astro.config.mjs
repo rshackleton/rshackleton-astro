@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import dotenv from 'dotenv';
 
 // https://astro.build/config
 import tailwind from '@astrojs/tailwind';
@@ -13,6 +14,12 @@ import mdx from '@astrojs/mdx';
 import vercel from '@astrojs/vercel/static';
 
 // https://astro.build/config
+import sanity from 'astro-sanity';
+
+// Load env for config.
+dotenv.config({ path: `.env.local` });
+
+// https://astro.build/config
 export default defineConfig({
   adapter: vercel(),
   integrations: [
@@ -23,6 +30,11 @@ export default defineConfig({
     }),
     react(),
     mdx(),
+    sanity({
+      dataset: process.env.SANITY_STUDIO_DATASET,
+      projectId: process.env.SANITY_STUDIO_PROJECT_ID,
+      useCdn: true,
+    }),
   ],
   output: 'static',
 });

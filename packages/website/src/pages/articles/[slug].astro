@@ -1,0 +1,19 @@
+---
+import { formatDate, formatDateISO } from '../../helpers/date';
+import Layout from '../../layouts/Layout.astro';
+import { getArticle, getArticles } from '../../sanity/articles';
+
+export async function getStaticPaths() {
+  const articles = await getArticles();
+  return articles.map((article) => ({ params: { slug: article.slug } }));
+}
+
+const article = await getArticle(Astro.params.slug ?? '');
+---
+
+<Layout title="Articles | Richard Shackleton">
+  <div>
+    <h1>{article.title}</h1>
+    <time datetime={formatDateISO(article.date)}>{formatDate(article.date)}</time>
+  </div>
+</Layout>

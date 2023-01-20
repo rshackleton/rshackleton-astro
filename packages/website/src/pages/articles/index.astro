@@ -1,8 +1,24 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { getArticles } from '../../sanity/articles';
+
+const articles = await getArticles();
 ---
 
 <Layout title="Articles | Richard Shackleton">
   <h1>Articles</h1>
-  <div>TODO: Show article list</div>
+  <div>
+    <ul>
+      {
+        articles.map((article) => (
+          <li>
+            <a href={`/articles/${article.slug}`}>
+              <h2>{article.title}</h2>
+              <p>{article.summary}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </Layout>
