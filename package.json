@@ -8,7 +8,8 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "format": "prettier --write src"
   },
   "dependencies": {
     "@astrojs/react": "^1.2.2",
@@ -18,6 +19,15 @@
     "astro": "^1.9.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "tailwindcss": "^3.0.24"
+    "tailwindcss": "^3.0.24",
+    "tailwindcss-fluid-type": "^2.0.3"
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "printWidth": 100,
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "all"
   }
 }

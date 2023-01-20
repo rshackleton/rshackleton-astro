@@ -1,0 +1,27 @@
+---
+export type NavigationItem = {
+  id: string;
+  title: string;
+  url: string;
+};
+
+const items: NavigationItem[] = [
+  { id: '1', title: 'About', url: '/about ' },
+  { id: '2', title: 'Articles', url: '/articles ' },
+  { id: '3', title: 'Experience', url: '/experience ' },
+];
+---
+
+<nav>
+  <ul class="flex gap-x-6">
+    {
+      items.map((item) => (
+        <li>
+          <a class="inline-block font-medium underline-offset-4 hover:underline" href={item.url}>
+            {item.title}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
