@@ -1,8 +1,8 @@
 ---
-import ArticleList from '../components/ArticleList.astro';
-import Hero from '../components/Hero.astro';
-import Layout from '../layouts/Layout.astro';
-import { getArticles } from '../sanity/articles';
+import ArticleList from '@/components/ArticleList.astro';
+import Hero from '@/components/Hero.astro';
+import Layout from '@/layouts/Layout.astro';
+import { getArticles } from '@/sanity/articles';
 
 const articles = await getArticles(3);
 ---

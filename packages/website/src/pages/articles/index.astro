@@ -1,7 +1,7 @@
 ---
-import Hero from '../../components/Hero.astro';
-import Layout from '../../layouts/Layout.astro';
-import { getArticles } from '../../sanity/articles';
+import Hero from '@/components/Hero.astro';
+import Layout from '@/layouts/Layout.astro';
+import { getArticles } from '@/sanity/articles';
 
 const articles = await getArticles();
 ---

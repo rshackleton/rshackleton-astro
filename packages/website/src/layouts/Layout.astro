@@ -1,8 +1,8 @@
 ---
-import '../base.css';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-import TrackVitals from '../components/TrackVitals.astro';
+import '@/base.css';
+import Footer from '@/components/Footer.astro';
+import Header from '@/components/Header.astro';
+import TrackVitals from '@/components/TrackVitals.astro';
 
 export interface Props {
   description?: string;
@@ -10,6 +10,8 @@ export interface Props {
 }
 
 const { description, title } = Astro.props;
+
+const isProduction = import.meta.env.PUBLIC_VERCEL_ENV === 'production';
 ---
 
 <!DOCTYPE html>
@@ -32,7 +34,6 @@ const { description, title } = Astro.props;
       <slot />
     </main>
     <Footer />
-    <TrackVitals />
-    <script is:inline defer src="/_vercel/insights/script.js"></script>
+    {isProduction && <TrackVitals />}
   </body>
 </html>

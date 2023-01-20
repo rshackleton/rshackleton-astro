@@ -1,8 +1,8 @@
 ---
-import Hero from '../../components/Hero.astro';
-import { formatDate } from '../../helpers/date';
-import Layout from '../../layouts/Layout.astro';
-import { getArticle, getArticles } from '../../sanity/articles';
+import Hero from '@/components/Hero.astro';
+import { formatDate } from '@/helpers/date';
+import Layout from '@/layouts/Layout.astro';
+import { getArticle, getArticles } from '@/sanity/articles';
 
 export async function getStaticPaths() {
   const articles = await getArticles();
