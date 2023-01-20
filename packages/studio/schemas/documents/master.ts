@@ -13,5 +13,17 @@ export default {
       type: 'string',
       validation: (V) => V.required(),
     },
+    {
+      name: 'metaTitle',
+      title: 'Meta Title',
+      type: 'string',
+      validation: (V) => V.required(),
+    },
+    {
+      name: 'metaDescription',
+      title: 'Meta Description',
+      type: 'string',
+      validation: (V) => V.required(),
+    },
   ],
 } satisfies SchemaTypeDefinition;

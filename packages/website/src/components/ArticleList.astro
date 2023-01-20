@@ -4,11 +4,12 @@ import type { ArticleModel } from '@/sanity/articles';
 
 interface Props {
   id?: string;
+  cta?: CtaModel;
   items: ArticleModel[];
   title?: string;
 }
 
-const { id, items, title } = Astro.props;
+const { cta, id, items, title } = Astro.props;
 ---
 
 <section id={id} class="container mx-auto my-[8vw] px-4">
@@ -33,4 +34,17 @@ const { id, items, title } = Astro.props;
       ))
     }
   </ul>
+  {
+    cta && (
+      <div class="mt-8 flex place-content-center place-items-center">
+        <a
+          class="bg-primary-700 hover:bg-primary-600 inline-block scale-100 rounded py-3 px-5 text-base font-bold text-white subpixel-antialiased transition will-change-transform hover:scale-110"
+          href={cta.href}
+          target={cta.target}
+        >
+          {cta.text}
+        </a>
+      </div>
+    )
+  }
 </section>

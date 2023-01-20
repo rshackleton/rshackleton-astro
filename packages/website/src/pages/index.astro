@@ -7,7 +7,7 @@ import { getArticles } from '@/sanity/articles';
 const articles = await getArticles(3);
 ---
 
-<Layout title="Full Stack Developer">
+<Layout metaTitle="Full Stack Developer">
   <Hero
     title="Full Stack Developer"
     content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
@@ -28,5 +28,13 @@ const articles = await getArticles(3);
     TODO: Add experience here...
   </p>
 
-  <ArticleList id="articles" title="Articles" items={articles} />
+  <ArticleList
+    id="articles"
+    title="Articles"
+    items={articles}
+    cta={{
+      href: '/articles',
+      text: 'Check out the other articles',
+    }}
+  />
 </Layout>

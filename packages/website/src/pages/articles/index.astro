@@ -1,4 +1,5 @@
 ---
+import ArticleList from '@/components/ArticleList.astro';
 import Hero from '@/components/Hero.astro';
 import Layout from '@/layouts/Layout.astro';
 import { getArticles } from '@/sanity/articles';
@@ -6,20 +7,7 @@ import { getArticles } from '@/sanity/articles';
 const articles = await getArticles();
 ---
 
-<Layout title="Articles | Richard Shackleton">
+<Layout metaTitle="Articles | Richard Shackleton">
   <Hero title="Articles" />
-  <div>
-    <ul>
-      {
-        articles.map((article) => (
-          <li>
-            <a href={`/articles/${article.slug}`}>
-              <h2>{article.title}</h2>
-              <p>{article.summary}</p>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </div>
+  <ArticleList items={articles} />
 </Layout>

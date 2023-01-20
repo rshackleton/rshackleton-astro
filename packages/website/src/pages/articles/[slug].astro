@@ -12,6 +12,6 @@ export async function getStaticPaths() {
 const article = await getArticle(Astro.params.slug ?? '');
 ---
 
-<Layout title={`${article.title}`}>
+<Layout metaTitle={article.title} metaDescription={article.summary}>
   <Hero title={article.title} subtitle={formatDate(article.date)} />
 </Layout>

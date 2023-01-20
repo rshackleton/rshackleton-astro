@@ -3,13 +3,16 @@ import '@/base.css';
 import Footer from '@/components/Footer.astro';
 import Header from '@/components/Header.astro';
 import TrackVitals from '@/components/TrackVitals.astro';
+import { getMaster } from '@/sanity/master';
 
 export interface Props {
-  description?: string;
-  title: string;
+  metaDescription?: string;
+  metaTitle: string;
 }
 
-const { description, title } = Astro.props;
+const { metaDescription, metaTitle } = Astro.props;
+
+const master = await getMaster();
 
 const isProduction = import.meta.env.PUBLIC_VERCEL_ENV === 'production';
 ---
@@ -21,8 +24,8 @@ const isProduction = import.meta.env.PUBLIC_VERCEL_ENV === 'production';
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title} | Richard Shackleton</title>
-    <meta name="description" content={description ?? `Richard Shackleton Full Stack Developer`} />
+    <title>{metaTitle} | {master.metaTitle}</title>
+    <meta name="description" content={metaDescription ?? master.metaDescription} />
   </head>
   <body>
     <a

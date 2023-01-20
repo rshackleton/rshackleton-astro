@@ -38,6 +38,7 @@ export async function getArticle(slug: string) {
         banner,
         content,
         date,
+        summary,
         title,
       }
     `,
