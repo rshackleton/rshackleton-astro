@@ -17,16 +17,16 @@ const articles = await getArticles(3);
     }}
   />
 
-  <a id="about"></a>
-  <p class="bg-primary-50 flex h-96 place-content-center place-items-center text-center">
+  <p id="about" class="bg-primary-50 flex h-96 place-content-center place-items-center text-center">
     TODO: Add bio here...
   </p>
 
-  <a id="experience"></a>
-  <p class="bg-primary-50 flex h-96 place-content-center place-items-center text-center">
+  <p
+    id="experience"
+    class="bg-primary-50 flex h-96 place-content-center place-items-center text-center"
+  >
     TODO: Add experience here...
   </p>
 
-  <a id="articles"></a>
-  <ArticleList title="Articles" items={articles} />
+  <ArticleList id="articles" title="Articles" items={articles} />
 </Layout>
