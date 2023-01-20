@@ -18,7 +18,7 @@ const path = Object.entries(Astro.params).reduce(
   // Based on https://vercel.com/docs/concepts/analytics/api
 
   import type { Metric } from 'web-vitals';
-  import { onCLS, onFCP, onFID, onLCP, onTTFB } from 'web-vitals';
+  import { onCLS, onFCP, onFID, onINP, onLCP, onTTFB } from 'web-vitals';
 
   const vitalsUrl = 'https://vitals.vercel-analytics.com/v1/vitals';
   const analyticsId = import.meta.env.PUBLIC_VERCEL_ANALYTICS_ID as string;
@@ -49,6 +49,7 @@ const path = Object.entries(Astro.params).reduce(
       onLCP((metric) => sendToAnalytics(metric, options));
       onCLS((metric) => sendToAnalytics(metric, options));
       onFCP((metric) => sendToAnalytics(metric, options));
+      onINP((metric) => sendToAnalytics(metric, options));
     } catch (err) {
       console.error('[Analytics]', err);
     }
