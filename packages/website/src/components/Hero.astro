@@ -1,15 +1,19 @@
 ---
 interface Props {
+  anchorId?: string;
   content?: string;
   cta?: CtaModel;
   subtitle?: string;
   title: string;
 }
 
-const { content, cta, subtitle, title } = Astro.props;
+const { anchorId, content, cta, subtitle, title } = Astro.props;
 ---
 
-<section class="relative grid place-content-center place-items-center overflow-hidden py-[8vw]">
+<section
+  id={anchorId}
+  class="relative grid place-content-center place-items-center overflow-hidden py-[8vw]"
+>
   <div class="container relative mx-auto w-full px-4 text-center">
     <h1 class="pb-5 text-5xl font-bold">{title}</h1>
     {subtitle && <p class="pb-5 text-lg font-medium">{subtitle}</p>}
@@ -18,7 +22,7 @@ const { content, cta, subtitle, title } = Astro.props;
       cta && (
         <a
           class="bg-primary-700 hover:bg-primary-600 inline-block scale-100 rounded py-3 px-5 text-base font-bold text-white subpixel-antialiased transition will-change-transform hover:scale-110"
-          href={cta.href}
+          href={cta.url}
           target={cta.target}
         >
           {cta.text}

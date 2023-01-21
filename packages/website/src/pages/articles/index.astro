@@ -2,12 +2,9 @@
 import ArticleList from '@/components/ArticleList.astro';
 import Hero from '@/components/Hero.astro';
 import Layout from '@/layouts/Layout.astro';
-import { getArticles } from '@/sanity/articles';
-
-const articles = await getArticles();
 ---
 
-<Layout metaTitle="Articles | Richard Shackleton">
+<Layout seo={{ title: 'Articles | Richard Shackleton' }}>
   <Hero title="Articles" />
-  <ArticleList items={articles} />
+  <ArticleList />
 </Layout>

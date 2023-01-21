@@ -1,0 +1,13 @@
+---
+interface Props {
+  anchorId?: string;
+}
+
+const { anchorId } = Astro.props;
+---
+
+<section id={anchorId}>
+  <p class="bg-primary-50 flex h-96 place-content-center place-items-center text-center">
+    TODO: Add bio here...
+  </p>
+</section>

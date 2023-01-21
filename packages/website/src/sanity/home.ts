@@ -1,19 +1,23 @@
 import { useSanityClient } from 'astro-sanity';
 import groq from 'groq';
+import { sections } from './sections';
 
-export type MasterModel = {
+export type HomeModel = {
   id: string;
+  sections: SectionModel[];
   seo: SEOModel;
   title: string;
 };
 
-export async function getMaster() {
+export async function getHome() {
   const client = useSanityClient();
 
   const data = await client.fetch(
     groq`
-      *[_type == "master"][0] {
-        "id": _id,
+      *[_type == "home"][0] {
+        sections[] {
+          ${sections}
+        },
         seo {
           description,
           title,
@@ -23,5 +27,5 @@ export async function getMaster() {
     `,
   );
 
-  return data as MasterModel;
+  return data as HomeModel;
 }

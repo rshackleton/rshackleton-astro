@@ -9,9 +9,9 @@ export async function getStaticPaths() {
   return articles.map((article) => ({ params: { slug: article.slug } }));
 }
 
-const article = await getArticle(Astro.params.slug ?? '');
+const { date, seo, title } = await getArticle(Astro.params.slug ?? '');
 ---
 
-<Layout metaTitle={article.title} metaDescription={article.summary}>
-  <Hero title={article.title} subtitle={formatDate(article.date)} />
+<Layout seo={seo}>
+  <Hero title={title} subtitle={formatDate(date)} />
 </Layout>

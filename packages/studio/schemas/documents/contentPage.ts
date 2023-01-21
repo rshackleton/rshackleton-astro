@@ -1,8 +1,9 @@
 import { DocumentIcon } from '@sanity/icons';
-import { SchemaTypeDefinition } from 'sanity';
+import { defineType } from 'sanity';
 import content from '../fields/content';
+import seo from '../fields/seo';
 
-export default {
+export default defineType({
   icon: DocumentIcon,
   name: 'contentpage',
   title: 'Content Page',
@@ -27,5 +28,6 @@ export default {
       ...content,
       validation: (V) => V.required(),
     },
+    seo,
   ],
-} satisfies SchemaTypeDefinition;
+});

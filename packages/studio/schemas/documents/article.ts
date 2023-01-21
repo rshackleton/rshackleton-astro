@@ -1,9 +1,10 @@
 import { BookIcon } from '@sanity/icons';
-import { SchemaTypeDefinition } from 'sanity';
+import { defineType } from 'sanity';
 import { formatDate } from '../../helpers/date';
 import content from '../fields/content';
+import seo from '../fields/seo';
 
-export default {
+export default defineType({
   icon: BookIcon,
   name: 'article',
   title: 'Article',
@@ -67,5 +68,6 @@ export default {
       ...content,
       validation: (V) => V.required(),
     },
+    seo,
   ],
-} satisfies SchemaTypeDefinition;
+});

@@ -4,12 +4,13 @@ import groq from 'groq';
 export type ArticleModel = {
   id: string;
   date: string;
+  seo: SEOModel;
   slug: string;
   summary: string;
   title: string;
 };
 
-export async function getArticles(count: number = -1) {
+export async function getArticles(count = -1) {
   const client = useSanityClient();
 
   const data = await client.fetch(
@@ -38,6 +39,10 @@ export async function getArticle(slug: string) {
         banner,
         content,
         date,
+        seo {
+          description,
+          title,
+        },
         summary,
         title,
       }

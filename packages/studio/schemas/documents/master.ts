@@ -1,7 +1,8 @@
 import { CogIcon } from '@sanity/icons';
-import { SchemaTypeDefinition } from 'sanity';
+import { defineType } from 'sanity';
+import seo from '../fields/seo';
 
-export default {
+export default defineType({
   icon: CogIcon,
   name: 'master',
   title: 'Master',
@@ -13,17 +14,6 @@ export default {
       type: 'string',
       validation: (V) => V.required(),
     },
-    {
-      name: 'metaTitle',
-      title: 'Meta Title',
-      type: 'string',
-      validation: (V) => V.required(),
-    },
-    {
-      name: 'metaDescription',
-      title: 'Meta Description',
-      type: 'string',
-      validation: (V) => V.required(),
-    },
+    seo,
   ],
-} satisfies SchemaTypeDefinition;
+});

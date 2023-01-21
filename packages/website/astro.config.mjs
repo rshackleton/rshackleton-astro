@@ -1,3 +1,4 @@
+import vitePluginComponentMap from '@rshackleton/vite-plugin-component-map';
 import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
@@ -34,4 +35,14 @@ export default defineConfig({
     }),
   ],
   output: 'static',
+  vite: {
+    plugins: [
+      vitePluginComponentMap({
+        articleList: 'components/ArticleList.astro',
+        bio: 'components/Bio.astro',
+        experience: 'components/Experience.astro',
+        hero: 'components/Hero.astro',
+      }),
+    ],
+  },
 });

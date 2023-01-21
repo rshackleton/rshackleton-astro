@@ -1,0 +1,15 @@
+---
+import COMPONENT_MAP from 'virtual:component-map';
+
+interface Props extends SectionModel {}
+
+const { _type, ...otherProps } = Astro.props;
+
+const Component = COMPONENT_MAP[_type];
+
+if (!Component) {
+  console.warn(`Could not find component for type: ${_type}`);
+}
+---
+
+{Component && <Component {...otherProps} />}

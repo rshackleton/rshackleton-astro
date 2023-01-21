@@ -1,0 +1,11 @@
+---
+import Section from './Section.astro';
+
+interface Props {
+  sections: SectionModel[];
+}
+
+const { sections } = Astro.props;
+---
+
+{sections.map((section) => <Section {...section} />)}

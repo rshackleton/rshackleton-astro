@@ -1,8 +1,9 @@
 import { HomeIcon } from '@sanity/icons';
-import { SchemaTypeDefinition } from 'sanity';
+import { defineType } from 'sanity';
 import sections from '../fields/sections';
+import seo from '../fields/seo';
 
-export default {
+export default defineType({
   icon: HomeIcon,
   name: 'home',
   title: 'Home',
@@ -18,5 +19,6 @@ export default {
       ...sections,
       validation: (V) => V.required(),
     },
+    seo,
   ],
-} satisfies SchemaTypeDefinition;
+});

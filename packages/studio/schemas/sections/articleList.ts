@@ -3,8 +3,8 @@ import { defineType } from 'sanity';
 
 export default defineType({
   icon: BlockElementIcon,
-  name: 'hero',
-  title: 'Hero',
+  name: 'articleList',
+  title: 'Article List',
   type: 'object',
   fields: [
     {
@@ -14,19 +14,14 @@ export default defineType({
       validation: (V) => V.required(),
     },
     {
-      name: 'subtitle',
-      title: 'Subtitle',
-      type: 'string',
-    },
-    {
-      name: 'content',
-      title: 'Content',
-      type: 'text',
-    },
-    {
       name: 'cta',
       title: 'CTA',
       type: 'cta',
+    },
+    {
+      name: 'count',
+      title: 'Count',
+      type: 'number',
     },
     {
       name: 'anchorId',

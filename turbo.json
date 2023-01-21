@@ -18,6 +18,7 @@
       "outputs": [".vercel/**"]
     },
     "dev": {
+      "dependsOn": ["@rshackleton/vite-plugin-component-map#build"],
       "cache": false,
       "persistent": true
     },

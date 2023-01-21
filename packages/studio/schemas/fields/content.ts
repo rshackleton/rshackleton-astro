@@ -1,6 +1,6 @@
-import { SchemaTypeDefinition } from 'sanity';
+import { defineField } from 'sanity';
 
-export default {
+export default defineField({
   name: 'content',
   title: 'Content',
   type: 'array',
@@ -11,4 +11,4 @@ export default {
     { type: 'tweet' },
     { type: 'image' },
   ],
-} satisfies SchemaTypeDefinition;
+});

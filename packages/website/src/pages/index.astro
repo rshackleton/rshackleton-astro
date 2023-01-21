@@ -1,40 +1,11 @@
 ---
-import ArticleList from '@/components/ArticleList.astro';
-import Hero from '@/components/Hero.astro';
+import Sections from '@/components/Sections.astro';
 import Layout from '@/layouts/Layout.astro';
-import { getArticles } from '@/sanity/articles';
+import { getHome } from '@/sanity/home';
 
-const articles = await getArticles(3);
+const { sections, seo } = await getHome();
 ---
 
-<Layout metaTitle="Full Stack Developer">
-  <Hero
-    title="Full Stack Developer"
-    content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-    cta={{
-      href: '/#about',
-      text: 'Find out more',
-    }}
-  />
-
-  <p id="about" class="bg-primary-50 flex h-96 place-content-center place-items-center text-center">
-    TODO: Add bio here...
-  </p>
-
-  <p
-    id="experience"
-    class="bg-primary-50 flex h-96 place-content-center place-items-center text-center"
-  >
-    TODO: Add experience here...
-  </p>
-
-  <ArticleList
-    id="articles"
-    title="Articles"
-    items={articles}
-    cta={{
-      href: '/articles',
-      text: 'Check out the other articles',
-    }}
-  />
+<Layout seo={seo}>
+  <Sections sections={sections} />
 </Layout>
