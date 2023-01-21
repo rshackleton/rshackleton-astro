@@ -1,0 +1,33 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {},
+    "@rshackleton/studio#build": {
+      "dependsOn": ["^build"],
+      "env": ["SANITY_STUDIO_DATASET", "SANITY_STUDIO_PROJECT_ID"],
+      "outputs": ["dist/**"]
+    },
+    "@rshackleton/website#build": {
+      "dependsOn": ["^build"],
+      "env": [
+        "SANITY_STUDIO_DATASET",
+        "SANITY_STUDIO_PROJECT_ID",
+        "PUBLIC_VERCEL_ANALYTICS_ID",
+        "PUBLIC_VERCEL_ENV"
+      ],
+      "outputs": [".vercel/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "preview": {
+      "cache": false,
+      "persistent": true
+    },
+    "format": {},
+    "lint": {
+      "dependsOn": ["format"]
+    }
+  }
+}

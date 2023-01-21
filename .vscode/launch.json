@@ -1,26 +1,11 @@
 {
   "version": "0.2.0",
-  "compounds": [
-    {
-      "name": "Studio & Website",
-      "configurations": ["Studio", "Website"],
-      "stopAll": true
-    }
-  ],
   "configurations": [
     {
-      "command": "./node_modules/.bin/sanity dev",
-      "name": "Studio",
+      "command": "yarn dev",
+      "name": "Turbo",
       "request": "launch",
-      "type": "node-terminal",
-      "cwd": "${workspaceFolder}/packages/studio"
-    },
-    {
-      "command": "./node_modules/.bin/astro dev",
-      "name": "Website",
-      "request": "launch",
-      "type": "node-terminal",
-      "cwd": "${workspaceFolder}/packages/website"
+      "type": "node-terminal"
     }
   ]
 }

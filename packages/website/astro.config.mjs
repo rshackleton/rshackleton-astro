@@ -1,5 +1,4 @@
 import { defineConfig } from 'astro/config';
-import dotenv from 'dotenv';
 
 // https://astro.build/config
 import tailwind from '@astrojs/tailwind';
@@ -15,9 +14,6 @@ import vercel from '@astrojs/vercel/static';
 
 // https://astro.build/config
 import sanity from 'astro-sanity';
-
-// Load env for config.
-dotenv.config({ path: `.env.local` });
 
 // https://astro.build/config
 export default defineConfig({

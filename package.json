@@ -1,12 +1,21 @@
 {
   "name": "@rshackleton/root",
   "private": true,
-  "devDependencies": {
-    "prettier": "2.8.3",
-    "prettier-plugin-astro": "0.7.2",
-    "prettier-plugin-tailwindcss": "0.2.1"
+  "scripts": {
+    "build": "dotenv -- turbo run build",
+    "dev": "dotenv -- turbo run dev",
+    "preview": "dotenv -- turbo run preview",
+    "format": "turbo run format",
+    "lint": "turbo run lint"
   },
   "workspaces": [
     "./packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "dotenv-cli": "7.0.0",
+    "eslint": "8.32.0",
+    "prettier": "2.8.3",
+    "prettier-plugin-astro": "0.7.2",
+    "prettier-plugin-tailwindcss": "0.2.1"
+  }
 }
