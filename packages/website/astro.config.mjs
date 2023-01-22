@@ -39,9 +39,13 @@ export default defineConfig({
     plugins: [
       vitePluginComponentMap({
         articleList: 'components/ArticleList.astro',
+        articleSummary: 'components/ArticleSummary.tsx',
         bio: 'components/Bio.astro',
+        code: 'components/Code.tsx',
         experience: 'components/Experience.astro',
         hero: 'components/Hero.astro',
+        image: 'components/Image.tsx',
+        tweet: 'components/Tweet.tsx',
       }),
     ],
   },

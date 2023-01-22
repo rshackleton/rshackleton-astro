@@ -3,15 +3,25 @@ import Hero from '@/components/Hero.astro';
 import { formatDate } from '@/helpers/date';
 import Layout from '@/layouts/Layout.astro';
 import { getArticle, getArticles } from '@/sanity/articles';
+import { PortableText } from '@portabletext/react';
+import COMPONENT_MAP from 'virtual:component-map';
 
 export async function getStaticPaths() {
   const articles = await getArticles();
   return articles.map((article) => ({ params: { slug: article.slug } }));
 }
 
-const { date, seo, title } = await getArticle(Astro.params.slug ?? '');
+const { content, date, seo, title } = await getArticle(Astro.params.slug ?? '');
 ---
 
 <Layout seo={seo}>
   <Hero title={title} subtitle={formatDate(date)} />
+  <section class="rich-text container mx-auto">
+    <PortableText
+      components={{
+        types: COMPONENT_MAP,
+      }}
+      value={content}
+    />
+  </section>
 </Layout>
