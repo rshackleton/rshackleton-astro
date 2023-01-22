@@ -42,6 +42,10 @@
     ol,
     ul {
       @apply ml-6;
+
+      a {
+        @apply from-primary-900 to-primary-700 hover:border-primary-500 border-b-2 border-transparent bg-gradient-to-r bg-clip-text font-medium text-transparent transition;
+      }
     }
 
     ul {

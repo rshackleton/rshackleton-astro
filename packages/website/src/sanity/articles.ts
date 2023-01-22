@@ -1,8 +1,10 @@
+import type { TypedObject } from '@portabletext/types';
 import { useSanityClient } from 'astro-sanity';
 import groq from 'groq';
 
 export type ArticleModel = {
   id: string;
+  content: TypedObject | TypedObject[];
   date: string;
   seo: SEOModel;
   slug: string;
