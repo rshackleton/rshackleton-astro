@@ -1,3 +1,3 @@
-import MyComponent from './src/MyComponent.astro';
+import PortableText from './src/PortableText.astro';
 
-export default MyComponent;
+export { PortableText };

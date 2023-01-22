@@ -22,6 +22,7 @@
     "@astrojs/vercel": "2.4.0",
     "@portabletext/react": "tillschweneker/react-portabletext",
     "@portabletext/toolkit": "tillschweneker/toolkit",
+    "@rshackleton/astro-portabletext": "*",
     "@rshackleton/vite-plugin-component-map": "*",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
