@@ -98,7 +98,7 @@ export interface MarkComponentProps<
     Pick<ToolkitNestedPortableTextSpan, 'markKey' | 'markType'>,
     Pick<CustomBlockComponentProps, 'parentBlock'> {
   plainTextContent: string;
-  value: MarkType extends string ? undefined : MarkType;
+  value?: MarkType extends string ? undefined : MarkType;
 }
 
 export type CustomStyles =

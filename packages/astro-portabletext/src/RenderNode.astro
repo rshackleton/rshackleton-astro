@@ -61,7 +61,7 @@ const { node, indexInParent, parentBlock, isInline } = options;
       ))}
     </RenderListItem>
   ) : isPortableTextToolkitSpan(node) ? (
-    <RenderSpan global={global} node={node} parentBlock={parentBlock}>
+    <RenderSpan global={global} indexInParent={indexInParent} node={node} parentBlock={parentBlock}>
       {node.children.map((child, childIndex) => (
         <Astro.self
           global={global}
