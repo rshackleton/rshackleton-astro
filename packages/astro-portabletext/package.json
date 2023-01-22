@@ -15,9 +15,11 @@
   ],
   "scripts": {},
   "devDependencies": {
+    "@portabletext/toolkit": "tillschweneker/toolkit",
     "astro": "1.9.0"
   },
   "peerDependencies": {
-    "astro": "^1.7.2"
+    "astro": "^1.7.2",
+    "@portabletext/toolkit": "2.0.0"
   }
 }

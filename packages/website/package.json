@@ -20,7 +20,6 @@
     "@astrojs/react": "1.2.2",
     "@astrojs/tailwind": "2.1.3",
     "@astrojs/vercel": "2.4.0",
-    "@portabletext/react": "tillschweneker/react-portabletext",
     "@portabletext/toolkit": "tillschweneker/toolkit",
     "@rshackleton/astro-portabletext": "*",
     "@rshackleton/vite-plugin-component-map": "*",

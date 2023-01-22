@@ -1,0 +1,103 @@
+---
+import {
+  buildMarksTree,
+  isPortableTextBlock,
+  isPortableTextListItemBlock,
+  isPortableTextToolkitList,
+  isPortableTextToolkitSpan,
+  isPortableTextToolkitTextNode,
+} from '@portabletext/toolkit';
+import type { PortableTextBlock } from '@portabletext/types';
+import type { GenericNode } from './ptTypes';
+import type { GlobalProps } from './rendererTypes';
+
+interface Props {
+  global: GlobalProps;
+  options: {
+    indexInParent: number;
+    isInline?: boolean;
+    node: GenericNode;
+    parentBlock?: PortableTextBlock;
+  };
+}
+
+const { global, options } = Astro.props;
+const { node, indexInParent, parentBlock, isInline } = options;
+---
+
+{
+  () => {
+    if (isPortableTextToolkitList(node)) {
+      return (
+        <ul>
+          {node.children.map((child, childIndex) => (
+            <Astro.self
+              global={global}
+              options={{
+                indexInParent: childIndex,
+                isInline: undefined,
+                node: child,
+                parentBlock: undefined,
+              }}
+            />
+          ))}
+        </ul>
+      );
+    } else if (isPortableTextListItemBlock(node)) {
+      return (
+        <li>
+          {buildMarksTree(node).map((child, childIndex) => (
+            <Astro.self
+              global={global}
+              options={{
+                indexInParent: childIndex,
+                isInline: true,
+                node: child,
+                parentBlock: node,
+              }}
+            />
+          ))}
+        </li>
+      );
+    } else if (isPortableTextToolkitSpan(node)) {
+      return (
+        <span>
+          {node.children.map((child, childIndex) => (
+            <Astro.self
+              global={global}
+              options={{
+                indexInParent: childIndex,
+                isInline: true,
+                node: child,
+                parentBlock,
+              }}
+            />
+          ))}
+        </span>
+      );
+    } else if (isPortableTextBlock(node)) {
+      return (
+        <p>
+          {buildMarksTree(node).map((child, childIndex) => (
+            <Astro.self
+              global={global}
+              options={{
+                indexInParent: childIndex,
+                isInline: true,
+                node: child,
+                parentBlock: node,
+              }}
+            />
+          ))}
+        </p>
+      );
+    } else if (isPortableTextToolkitTextNode(node)) {
+      return node.text;
+    } else if (node) {
+      <div>
+        <h3>Custom Node</h3>
+        <pre>{JSON.stringify(node)}</pre>
+      </div>;
+    }
+  }
+}
