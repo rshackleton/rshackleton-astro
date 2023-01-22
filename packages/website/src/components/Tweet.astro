@@ -1,0 +1,13 @@
+---
+interface Props {
+  portableText: {
+    value: any;
+  };
+}
+
+const { url } = Astro.props.portableText.value;
+---
+
+<article>
+  <p><a href={url} target="_blank">{url}</a></p>
+</article>

@@ -1,0 +1,31 @@
+---
+import { useSanityClient } from 'astro-sanity';
+import groq from 'groq';
+
+interface Props {
+  portableText: {
+    value: any;
+  };
+}
+
+const { article: reference } = Astro.props.portableText.value;
+
+const client = useSanityClient();
+const article = await client.fetch(
+  groq`
+    *[_type == 'article' && _id == $id][0] { 
+      "slug": slug.current, 
+      summary,
+      title,
+    }
+  `,
+  { id: reference._ref },
+);
+---
+
+<article>
+  <a href={`/articles/${article.slug}`}>
+    <h3>{article.title}</h3>
+    <p>{article.summary}</p>
+  </a>
+</article>

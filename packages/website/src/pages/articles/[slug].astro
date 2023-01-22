@@ -1,5 +1,9 @@
 ---
+import ArticleSummary from '@/components/ArticleSummary.astro';
+import Code from '@/components/Code.astro';
 import Hero from '@/components/Hero.astro';
+import Image from '@/components/Image.astro';
+import Tweet from '@/components/Tweet.astro';
 import { formatDate } from '@/helpers/date';
 import Layout from '@/layouts/Layout.astro';
 import { getArticle, getArticles } from '@/sanity/articles';
@@ -16,6 +20,16 @@ const { content, date, seo, title } = await getArticle(Astro.params.slug ?? '');
 <Layout seo={seo}>
   <Hero title={title} subtitle={formatDate(date)} />
   <section class="rich-text container mx-auto">
-    <PortableText value={content} />
+    <PortableText
+      components={{
+        types: {
+          articleSummary: ArticleSummary,
+          code: Code,
+          image: Image,
+          tweet: Tweet,
+        },
+      }}
+      value={content}
+    />
   </section>
 </Layout>

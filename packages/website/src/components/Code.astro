@@ -1,0 +1,25 @@
+---
+interface Props {
+  portableText: {
+    value: {
+      content: string;
+      language: string;
+      sourceUrl?: string;
+      title: string;
+    };
+  };
+}
+
+const { content, language, sourceUrl } = Astro.props.portableText.value;
+---
+
+<article>
+  <pre data-language={language}>{content}</pre>
+  {
+    sourceUrl && (
+      <p>
+        <a href={sourceUrl}>Click here to view the entire source</a>
+      </p>
+    )
+  }
+</article>
