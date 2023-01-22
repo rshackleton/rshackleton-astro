@@ -2,6 +2,9 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {},
+    "@rshackleton/vite-plugin-component-map#build": {
+      "cache": false
+    },
     "@rshackleton/studio#build": {
       "dependsOn": ["^build"],
       "env": ["SANITY_STUDIO_DATASET", "SANITY_STUDIO_PROJECT_ID"],
