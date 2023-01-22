@@ -28,7 +28,7 @@ export interface GlobalProps<ContextType = PortableTextAstroContext> {
   /**
    * Calls user-defined onMissingComponent.
    */
-  missingComponentHandler?: (type: string, nodeType: NodeType) => void;
+  missingComponentHandler: (type: string, nodeType: NodeType) => void;
 
   /**
    * Astro components used to render portable text.

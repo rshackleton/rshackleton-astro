@@ -1,5 +1,6 @@
 ---
 import { LIST_NEST_MODE_HTML, nestLists } from '@portabletext/toolkit';
+import DefaultBlock from './defaultComponents/DefaultBlock.astro';
 import type { InputValue, PortableTextAstroContext } from './ptTypes';
 import type { MissingComponentHandler, NodeType, PortableTextComponents } from './rendererTypes';
 import RenderNode from './RenderNode.astro';
@@ -14,7 +15,18 @@ export interface Props {
 
 const { components = undefined, context = {}, onMissingComponent = true, value } = Astro.props;
 
-const mergedComponents = components ?? {}; // mergeComponents(defaultComponents, components)
+const mergedComponents = components ?? {
+  block: {
+    blockquote: DefaultBlock,
+    h1: DefaultBlock,
+    h2: DefaultBlock,
+    h3: DefaultBlock,
+    h4: DefaultBlock,
+    h5: DefaultBlock,
+    h6: DefaultBlock,
+    normal: DefaultBlock,
+  },
+}; // mergeComponents(defaultComponents, components)
 const blocks = nestLists(Array.isArray(value) ? value : [value], LIST_NEST_MODE_HTML);
 
 const missingComponentHandler = (type: string, nodeType: NodeType) => {
