@@ -1,9 +1,19 @@
 ---
-import COMPONENT_MAP from 'virtual:component-map';
+import ArticleList from '@/components/organisms/ArticleList/ArticleList.astro';
+import Bio from '@/components/organisms/Bio/Bio.astro';
+import Experience from '@/components/organisms/Experience/Experience.astro';
+import Hero from '@/components/organisms/Hero/Hero.astro';
 
 interface Props extends SectionModel {}
 
 const { _type, ...otherProps } = Astro.props;
+
+const COMPONENT_MAP: Record<string, any> = {
+  articleList: ArticleList,
+  bio: Bio,
+  experience: Experience,
+  hero: Hero,
+};
 
 const Component = COMPONENT_MAP[_type];
 

@@ -14,9 +14,3 @@ declare interface SEOModel {
   description?: string;
   title: string;
 }
-
-declare module 'virtual:component-map' {
-  import type { ComponentMapModule } from '@rshackleton/vite-plugin-component-map';
-  const COMPONENT_MAP: ComponentMapModule;
-  export default COMPONENT_MAP;
-}
