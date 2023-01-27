@@ -38,10 +38,10 @@ export default defineConfig({
   vite: {
     plugins: [
       vitePluginComponentMap({
-        articleList: 'components/ArticleList.astro',
-        bio: 'components/Bio.astro',
-        experience: 'components/Experience.astro',
-        hero: 'components/Hero.astro',
+        articleList: 'components/organisms/ArticleList/ArticleList.astro',
+        bio: 'components/organisms/Bio/Bio.astro',
+        experience: 'components/organisms/Experience/Experience.astro',
+        hero: 'components/organisms/Hero/Hero.astro',
       }),
     ],
   },
