@@ -1,7 +1,11 @@
 # build output
-dist/
-.output/
+.astro
+.output
+.sanity
+.turbo
+.vercel
 *.tsbuildinfo
+dist/
 
 # dependencies
 node_modules/
@@ -18,12 +22,3 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
-
-# vercel
-.vercel/
-
-# sanity
-.sanity/
-
-# turbo
-.turbo

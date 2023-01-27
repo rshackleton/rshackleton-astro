@@ -1,0 +1,44 @@
+---
+title: Gatsby Cloud & Kontent.ai - A match made in heaven?
+date: 2019-11-29
+summary: A long-term issue with static websites is finally being solved by Gatsby Cloud and it's Real-time Preview feature - find out more!
+---
+
+import Image from '@/components/Image.astro';
+
+The latest beta of the [@kentico/gatsby-source-kontent](https://github.com/Kentico/gatsby-source-kontent/releases/tag/4.1.0-beta5) plugin has added support for incremental builds within Gatsby which means Kontent.ai has made the first step to supporting the new Real-time Preview feature in Gatsby Cloud! 🎉🎉🎉
+
+Currently support of this feature is limited, you require access to the custom elements feature in Kontent.ai and the real-time preview **only works for existing content** and **only primitive fields** such as text, date/time and number fields. Don't make the same mistake as me and try updating a rich text field and wonder why your preview isn't updating... 😅
+
+To give the new functionality a whirl then you must first update your Gatsby site to use the latest beta - v4.1.0-beta5 at the time of writing. If you're upgrading from v3 then you will need to handle the Kontent.ai re-branding and also ensure you've updated your Gatsby config file to respect the new configuration structure - all of these steps are described in [the upgrade notes](https://github.com/Kentico/gatsby-source-kontent/blob/4.1.0-beta5/docs/UPGRADE.md).
+
+You will also need to setup an account with [Gatsby Cloud](https://www.gatsbyjs.com/) and configure it to connect to your GitHub repository. Yes, for now it's only GitHub... Personally I'm hoping for support for other providers including Azure DevOps.
+
+Once you've setup your account and preview site you can move onto connecting Kontent.ai and Gatsby Cloud. To do this you will need to add the [Preview Custom Element](https://github.com/Simply007/gatsby-preview-custom-element) to one of your content types.
+
+<Image src="https://ik.imagekit.io/rshackleton/articles/gatsby-preview-custom-element.png?ik-sdk-version=javascript-1.4.3&updatedAt=1674845967060" />
+
+The first field needs to point to the hosted HTML file on GitHub:
+
+[https://simply007.github.io/gatsby-preview-custom-element/dist/preview-element.html](https://simply007.github.io/gatsby-preview-custom-element/dist/preview-element.html)
+
+Then you must select the different fields you wish to provide access to - I'm not 100% sure if this is a requirement for the plugin but I selected all of them regardless!
+
+Finally, you need to provide a configuration object in JSON format - this should be as follows:
+
+1. `previewApiKey` - This is your Kontent.ai Preview API Key, this can be found under your Project Settings > Development > API Keys.
+2. `previewUrlPattern` - This is the URL pattern that will setup the preview link when editing your content, this follows the same approach as the Preview URL functionality in Kontent.ai. You can configure your URLs with the urlslug and lang values as normal.
+3. `urlSlugElement` - This is the name of the element which contains your URL slug value - in my case this was called slug.
+4. `gatsbyWebHookUrl` - This is the webhook URL from your Gatsby Cloud instance, you can find this in your Gatsby Cloud dashboard under Site Settings > General > Webhook.
+
+Once configured, save your content type. If you now navigate to a content item of that type you should see a custom element field like this.
+
+<Image src="https://ik.imagekit.io/rshackleton/articles/gatsby-preview-custom-element-ready.png?ik-sdk-version=javascript-1.4.3&updatedAt=1674846064196" />
+
+Clicking the link in the field will open your Gatsby Cloud preview site and you're all set! Now edit a primitive field, such as a title or summary field, and you should see the changes reflected on your website in real time!
+
+If you create a new content item you will still need to manually trigger a new build of your Gatsby Preview to ensure the node itself is created. However, once that has been done any future updates to primitive field types will automatically be picked up.
+
+Despite the current limitations it is pretty wild to see a **static** website update in real-time without needing to reload the page - just like hot reloading a component or style sheet! The real-time preview functionality will go a long way to alleviating the concerns of some content editors and will allow Gatsby and Kontent.ai to become a viable option for many more projects and clients.
+
+There is currently no word on whether this functionality will require any particular license level in Kontent.ai but I believe it is planned to be included in the core product without requiring a custom element - personally I hope it will be made available to everyone as it's an enormous breakthrough in the technology!

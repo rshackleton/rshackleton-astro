@@ -57,7 +57,7 @@
     }
 
     pre {
-      @apply overflow-x-auto rounded bg-neutral-700 p-4 font-mono text-base text-neutral-200;
+      @apply max-h-[min(1000px,80vh)] overflow-auto rounded p-4 text-base;
 
       &::-webkit-scrollbar {
         @apply h-2 w-2;
@@ -67,7 +67,7 @@
       }
 
       &::-webkit-scrollbar-thumb {
-        @apply rounded bg-neutral-400;
+        @apply rounded bg-neutral-300/50;
       }
     }
   }

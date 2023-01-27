@@ -1,0 +1,33 @@
+---
+title: Automated builds with Netlify and Kontent.ai webhooks
+date: 2019-02-15
+summary: Discover how quick and simple it can be to automate Netlify builds when you publish content in Kontent.ai.
+---
+
+import Image from '@/components/Image.astro';
+
+One of the key aspects of developing a website using a static-site generator is understanding that the content is not served dynamically at the time of a request. In order to publish new content, the static website must be regenerated. An initial reaction could be that this is an arduous process that would require a developer or DevOps. However, this does not have to be the case.
+
+This very website was developed using Gatsby and Kontent.ai and is hosted by Netlify. In order to streamline content publishing, I configured Kontent.ai to trigger a build which is automatically pushed live by Netlify - and this is how it was done.
+
+Firstly, you need to log into your Netlify account and create a new [Build Hook](https://www.netlify.com/docs/webhooks/#incoming-webhooks).
+
+<Image src="https://ik.imagekit.io/rshackleton/articles/netlify-build-hook.png?ik-sdk-version=javascript-1.4.3&updatedAt=1674845480906" />
+
+Once you have created a build hook you will see a URL.
+
+<Image src="https://ik.imagekit.io/rshackleton/articles/netlify-build-hook-url.png?ik-sdk-version=javascript-1.4.3&updatedAt=1674845589162" />
+
+Your Netlify build hook is now created, time to configure Kontent.ai to send a request to the URL and trigger the Netlify build. Log in to your Kontent.ai account and navigate to Project Settings > Development > Webhooks.
+
+<Image src="https://ik.imagekit.io/rshackleton/articles/kentico-cloud-webhooks.png?ik-sdk-version=javascript-1.4.3&updatedAt=1674845647921" />
+
+In this new window click the Create new Webhook button and enter a name and the URL from your Netlify build hook.
+
+<Image src="https://ik.imagekit.io/rshackleton/articles/kentico-cloud-webhooks-form.png?ik-sdk-version=javascript-1.4.3&updatedAt=1674845647858" />
+
+Finally, click save and you're ready to go.
+
+<Image src="https://ik.imagekit.io/rshackleton/articles/netlify-deploys-queue.png?ik-sdk-version=javascript-1.4.3&updatedAt=1674845647852" />
+
+Try publishing some new content on Kontent.ai and check your Deploys queue in Netlify.

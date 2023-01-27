@@ -1,5 +1,8 @@
 {
+  "eslint.execArgv": ["--max_old_space_size=8192"],
+  "eslint.runtime": "node",
   "eslint.validate": ["astro", "javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "mdx.experimentalLanguageServer": true,
   "prettier.documentSelectors": ["**/*.astro"],
   "[astro]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

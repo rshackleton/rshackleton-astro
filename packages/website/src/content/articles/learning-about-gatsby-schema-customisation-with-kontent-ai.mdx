@@ -1,0 +1,368 @@
+---
+title: Learning about Gatsby schema customisation with Kontent.ai
+date: 2019-09-22
+summary: We can finally solve one of the biggest issues with Gatsby and dynamic content using schema customisation, find out how!
+---
+
+import ArticleSummary from '@/components/ArticleSummary.astro';
+
+Earlier in 2019, I wrote an article about a particular issue encountered in Gatsby when fields are expected but no content exists for them.
+
+<ArticleSummary slug="gotchas-and-workarounds-with-gatsby-and-kentico-cloud-part-1" />
+
+I alluded to a solution coming down the line from Gatsby called **Schema Customisation**. Well this feature landed in [version v2.2.0 about a week after that article was written](https://github.com/gatsbyjs/gatsby/blob/master/packages/gatsby/CHANGELOG.md#220-2019-03-19). There has also been [an issue open on the gatsby-source-kentico-cloud plugin's GitHub repository](https://github.com/Kentico/gatsby-source-kentico-cloud/issues/59) describing the need to resolve the issue raised in my article - namely that if no items exist for a particular content type then that type will not exist in the Gatsby schema, leading to build errors. As the Kentico team have been somewhat busy as of late, with the [rebrand to Kontent](https://kontent.ai/blog/moving-to-caas-with-kentico-kontent) and their recent Kentico Connection in Brno, I decided to put together a proof of concept for generating the Gatsby schema directly using the new API.
+
+If you're the sort of person who just wants to see the code then you can find the latest version in my sandbox project here:
+
+[https://github.com/rshackleton/gatsby-site-playground/blob/master/plugins/gatsby-source-kontent-rs/gatsby-node.js](https://github.com/rshackleton/gatsby-site-playground/blob/master/plugins/gatsby-source-kontent-rs/gatsby-node.js)
+
+I felt it would be useful to talk through some of this code in more detail to explain what is happening, and why.
+
+Firstly, we're using data from Kontent to generate our schema, therefore you will need to [register for a new account on their website](https://app.kontent.ai/). Once you have registered, take some time to create some content models and a variety of example content items based on those models. After you have some content to work with you can continue on to the next step.
+
+We now need to retrieve the data from Kontent's API, we can do this using their Delivery SDK. This can be installed by running:
+
+```sh
+yarn add @kentico/kontent-delivery
+```
+
+A new client can be created with your project ID:
+
+```js
+const client = new KontentDelivery.DeliveryClient({
+  projectId: configOptions.projectId,
+});
+```
+
+The Kontent models and items can be retrieved using the client with the following code:
+
+```js
+const typesResponse = await client.types().toPromise();
+const itemsResponse = await client.items().toPromise();
+```
+
+We can now use this data to create our Gatsby schema!
+
+Firstly, we create a whole bunch of base GraphQL types to ensure we have shared types available for fields and also common interfaces to make querying some of this data much easier! All of the base types can be found in the [createBaseTypes](https://github.com/rshackleton/gatsby-site-playground/blob/master/plugins/gatsby-source-kontent-rs/gatsby-node.js#L60) function.
+
+```js
+/**
+ * Create base GraphQL types to represent Kontent schema.
+ * @param {Object} schema
+ */
+function createBaseTypes(schema) {
+  const typeDefs = `
+    interface KontentItem @nodeInterface {
+      id: ID!
+      system: KontentItemSystem!
+    }
+    interface KontentElement @dontInfer {
+      name: String!
+      type: String!
+    }
+    type KontentItemSystem @infer {
+      codename: String!
+      id: String!
+      language: String!
+      lastModified: Date! @dateformat
+      name: String!
+      type: String!
+    }
+    type KontentAsset @infer {
+      name: String!
+      description: String
+      type: String!
+      size: Int!
+      url: String!
+      width: Int!
+      height: Int!
+    }
+    type KontentAssetElement implements KontentElement @infer {
+      name: String!
+      type: String!
+      value: [KontentAsset]
+    }
+    type KontentDateTimeElement implements KontentElement @infer {
+      name: String!
+      type: String!
+      value: Date @dateformat
+    }
+    type KontentModularContentElement implements KontentElement @infer {
+      name: String!
+      type: String!
+      value: [KontentItem] @link(by: "system.codename")
+    }
+    type KontentMultipleChoiceElement implements KontentElement @infer {
+      name: String!
+      type: String!
+    }
+    type KontentNumberElement implements KontentElement @infer {
+      name: String!
+      type: String!
+      value: Float
+    }
+    type KontentRichTextElement implements KontentElement @infer {
+      name: String!
+      type: String!
+      value: String
+      images: [KontentRichTextImage]
+      links: [KontentRichTextLink]
+      linkedItems: [KontentItem] @link(by: "system.codename")
+    }
+    type KontentRichTextImage @infer {
+      description: String
+      height: Int!
+      imageId: String!
+      url: String!
+      width: Int!
+    }
+    type KontentRichTextLink @infer {
+      codename: String!
+      linkId: String!
+      type: String!
+      urlSlug: String!
+    }
+    type KontentTaxonomyElement implements KontentElement @infer {
+      name: String!
+      type: String!
+      taxonomyGroup: String!
+      value: [KontentTaxonomyItem]
+    }
+    type KontentTaxonomyItem @infer {
+      name: String!
+      codename: String!
+    }
+    type KontentTextElement implements KontentElement @infer {
+      name: String!
+      type: String!
+      value: String
+    }
+    type KontentUrlSlugElement implements KontentElement @infer {
+      name: String!
+      type: String!
+      value: String
+    }
+  `;
+
+  return typeDefs;
+}
+```
+
+Once we've defined these shared GraphQL types we can start declaring the schema for our actual content models.
+
+```js
+/**
+ * Handles creating GraphQL types for all content types.
+ */
+async function handleTypeCreation() {
+  // Create base types for Kontent schema.
+  createTypes(createBaseTypes(schema));
+
+  // Create types for all Kontent types.
+  const response = await client.types().toPromise();
+  createTypes(response.types.reduce((acc, type) => acc.concat(createTypeDef(schema, type)), []));
+}
+```
+
+We will retrieve the types from the Kontent API then reduce those into an array of types - note we use a reduce function rather than a map function as we're returning multiple types from the "createTypeDef" function and need to flatten the result. The same result could have been achieved by using a map function and simple flattening the resulting nested array. The final array of type definitions is passed to Gatsby's "createTypes" function.
+
+The actual type definition is handled by the [createTypeDef](https://github.com/rshackleton/gatsby-site-playground/blob/master/plugins/gatsby-source-kontent-rs/gatsby-node.js#L248) function.
+
+```js
+/**
+ * Create GraphQL type definition for Kontent type.
+ * @param {Object} schema
+ * @param {KontentDelivery.ContentType} type
+ */
+function createTypeDef(schema, type) {
+  // Create field definitions for Kontent type elements.
+  const elementFields = type.elements.reduce((acc, element) => {
+    const fieldName = getGraphFieldName(element.codename);
+
+    return Object.assign(acc, {
+      [fieldName]: {
+        type: getElementValueType(element.type),
+      },
+    });
+  }, {});
+
+  const elementsTypeDef = schema.buildObjectType({
+    name: `${getGraphTypeName(type.system.codename)}Elements`,
+    fields: elementFields,
+    infer: false,
+  });
+
+  const typeDef = schema.buildObjectType({
+    name: getGraphTypeName(type.system.codename),
+    fields: {
+      system: 'KontentItemSystem!',
+      elements: `${getGraphTypeName(type.system.codename)}Elements`,
+    },
+    interfaces: ['Node', 'KontentItem'],
+    infer: false,
+  });
+
+  return [elementsTypeDef, typeDef];
+}
+```
+
+Here we use the new Type Builders API to construct a new GraphQL type. We try to mimic the general structure of the Kontent API by including both a top-level "system" and "elements" field. The "system" field is configured to use the "KontentItemSystem" type that we created earlier in the createBaseTypes function. This will be the same for all content models.
+
+The "elements" field is configured to use a model-specific GraphQL type as the available fields will be different for each content model.
+
+```js
+// Create field definitions for Kontent type elements.
+const elementFields = type.elements.reduce((acc, element) => {
+  const fieldName = getGraphFieldName(element.codename);
+
+  return Object.assign(acc, {
+    [fieldName]: {
+      type: getElementValueType(element.type),
+    },
+  });
+}, {});
+
+const elementsTypeDef = schema.buildObjectType({
+  name: `${getGraphTypeName(type.system.codename)}Elements`,
+  fields: elementFields,
+  infer: false,
+});
+```
+
+Firstly, we reduce the elements array into an object that includes the correct type for each field. This is done based on convention, the field name is generated by converting the Kontent codename value into camel case.
+
+```js
+/**
+ * Return transformed field name.
+ * @param {String} elementName
+ */
+function getGraphFieldName(elementName) {
+  return changeCase.camelCase(elementName);
+}
+```
+
+The element's GraphQL type is defined by converting it's Kontent field type into pascal case and sandwiching it between the keywords "Kontent" and "Element", e.g. "KontentTextElement" for a "text" field.
+
+```js
+/**
+ * Return appropriate GraphQL type for Kontent element type.
+ * @param {String} elementType
+ */
+function getElementValueType(elementType) {
+  return `Kontent${changeCase.pascalCase(elementType)}Element`;
+}
+```
+
+We then create a new type for the "elements" field itself with inference disabled using the "infer" property on the type builder definition.
+
+Finally, we create the actual type for our content model by defining the name using pascal case conversion from the codename value and specifying the fields mentioned earlier. Finally, we ensure our type implements both the "Node" and "KontentItem" interfaces. The former is the interface all Gatsby node types must implement to ensure they can be queried. The latter is a custom interface we defined to provide a common contract between all of our content models, this can be handy when querying fields later or when creating connections between types via the "@link" directive.
+
+```js
+const typeDef = schema.buildObjectType({
+  name: getGraphTypeName(type.system.codename),
+  fields: {
+    system: 'KontentItemSystem!',
+    elements: `${getGraphTypeName(type.system.codename)}Elements`,
+  },
+  interfaces: ['Node', 'KontentItem'],
+  infer: false,
+});
+
+return [elementsTypeDef, typeDef];
+```
+
+At this stage you could run your Gatsby site and check the schema using GraphiQL, you would notice that all of our types exist but if you execute a query you will see no data returned. Now we can look at fixing that!
+
+First of all we need to retrieve our content items from the Kontent API. This includes two collections of items on the "items" and "linkedItems" properties. We don't really care about the difference between these two so we can simply combine these arrays and union them based on the "system.codename" property to ensure we do not have any duplicates.
+
+```js
+/**
+ * Handles creating Gatsby nodes for all content items.
+ */
+async function handleNodeCreation() {
+  // Create nodes for all Kontent items.
+  const response = await client.items().toPromise();
+
+  const allItems = unionBy(response.items, response.linkedItems, 'system.codename');
+
+  allItems.forEach((item) => {
+    const itemNode = createItemNode(createContentDigest, createNodeId, item);
+    createNode(itemNode);
+  });
+}
+```
+
+Finally, we will create a Gatsby node for each content item and pass that to Gatsby's "createNode" function. The node creation is handled by the "createItemNode" function.
+
+```js
+/**
+ * Create Gatsby node for Kontent item.
+ * @param {Function} createContentDigest
+ * @param {Function} createNodeId
+ * @param {KontentDelivery.ContentItem} item
+ */
+function createItemNode(createContentDigest, createNodeId, item) {
+  // Get all keys where the property has a "type" property.
+  const elementPropertyKeys = Object.keys(item).filter((key) => item[key] && item[key].type);
+
+  // Create object with only element keys.
+  const elements = elementPropertyKeys.reduce((acc, key) => {
+    const fieldName = getGraphFieldName(key);
+    let fieldValue;
+
+    const elementValue = item[key];
+
+    if (elementValue.type === 'modular_content') {
+      // Transform modular content fields to support linking.
+      fieldValue = {
+        name: elementValue.name,
+        type: elementValue.type,
+        value: elementValue.itemCodenames,
+      };
+    } else if (elementValue.type === 'rich_text') {
+      // Transform rich text fields to support linking.
+      fieldValue = {
+        images: elementValue.images,
+        linkedItems: elementValue.linkedItemCodenames,
+        links: elementValue.links,
+        name: elementValue.name,
+        type: elementValue.type,
+        value: elementValue.value,
+      };
+    } else {
+      fieldValue = elementValue;
+    }
+
+    // Remove the raw data field.
+    delete fieldValue.rawData;
+
+    return Object.assign(acc, { [fieldName]: fieldValue });
+  }, {});
+
+  let nodeData = {
+    system: item.system,
+    elements: elements,
+  };
+
+  // Gatsby is not a fan of dealing with types vs plain objects
+  // so we'll re-serialize the data to make plain ol' objects!
+  nodeData = JSON.parse(JSON.stringify(nodeData));
+
+  const nodeMeta = {
+    id: createNodeId(getNodeIdValue(nodeData)),
+    parent: null,
+    children: [],
+    internal: {
+      type: getGraphTypeName(nodeData.system.type),
+      mediaType: 'text/html',
+      contentDigest: createContentDigest(nodeData),
+    },
+  };
+
+  const node = Object.assign({}, nodeData, nodeMeta);
+
+  return node;
+}
+```
+
+Finally, we can run the Gatsby site again and you should now be able to see data returned when executing your queries. The great thing about this approach is that if you delete all items of a particular model, or if none of the items have data for a particular field, then you'll be safe in the knowledge that your queries will still work as intended!

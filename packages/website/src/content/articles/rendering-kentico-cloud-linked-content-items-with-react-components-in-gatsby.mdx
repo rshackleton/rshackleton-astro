@@ -1,0 +1,205 @@
+---
+title: Rendering Kontent.ai linked content items with React components in Gatsby
+date: 2019-02-24
+summary: The v3 release of the Kontent.ai source plugin for Gatsby included new features which allow developers to render inline content items, links and assets using React components. See how to use this functionality and the benefits it brings!
+---
+
+On Wednesday, 20th February, v3.0.0 of the Kentico Gatsby source plugin was released, with a key new feature.
+
+[https://twitter.com/ChrastinaOndrej/status/1098211123365625857](https://twitter.com/ChrastinaOndrej/status/1098211123365625857)
+
+The new version allows inline content items, assets and links to be transformed. The first approach is to use the Type Resolvers and rich text resolvers defined in the Kontent.ai SDK.
+
+```js
+class Actor extends ContentItem {
+  public name: Fields.TextField;
+
+  constructor() {
+    super({
+        richTextResolver: (item: Actor, context) => {
+          return `<h3 class="resolved-item">${item.name.text}</h3>`;
+        }
+      })
+    }
+}
+```
+
+This approach allows for simple conversion between the original data and HTML mark-up, however, **this does not allow the use of React components**. Due to this, you will lose any ability to use CSS-in-JS frameworks, anything within the React context, any state data etc. One of the key restrictions specific to Gatsby is that you cannot use the Gatsby Link component, meaning any internal links will result in a full-page reload.
+
+So, in order to have more control over the result and remove these restrictions, we need to somehow transform the HTML from Kontent.ai into React components and then replace the embedded items with our own custom React components.
+
+Firstly, we need to convert that HTML code into React components. I’ve opted to use the [html-react-parser](https://github.com/remarkablemark/html-react-parser) library for this.
+
+```jsx
+import parseHTML from 'html-react-parser';
+
+// Remove any line breaks from HTML.
+const cleaned = content.replace(/(\n|\r)+/, '');
+
+// Parse HTML as React components, replacing any content items.
+const children = parseHTML(cleaned);
+
+// Return all components inside a fragment.
+return <>{children}</>;
+```
+
+Great! But it looks exactly how it did before, and the inline items aren’t transformed.
+
+```html
+<p
+  type="application/kenticocloud"
+  data-type="item"
+  data-rel="link"
+  data-codename="about"
+  class="kc-linked-item-wrapper"
+></p>
+```
+
+When we parse the above HTML, we must detect and replace the elements that represent a content item – this can be done with the replace option of `parseHTML`.
+
+```jsx
+// Parse HTML as React components, replacing any content items.
+const children = parseHTML(cleaned, {
+  replace: (domNode) => replaceNode(domNode, images, links, linkedItems),
+});
+
+/** Replace HTML DOM node with React component. */
+function replaceNode(domNode, images, links, linkedItems) {
+  // Replace inline linked items.
+  if (isLinkedItem(domNode)) {
+    const codename = getCodeName(domNode);
+    const linkedItem = getLinkedItem(codename, linkedItems);
+
+    return <LinkedItem linkedItem={linkedItem} />;
+  }
+}
+```
+
+Aha! Now we’re returning our own React component instead of the original paragraph element. The `LinkedItem` component is then responsible for determining which component should be rendered for the content item.
+
+```jsx
+const LinkedItem = ({ linkedItem }) => {
+  const type = get(linkedItem, 'system.type');
+
+  switch (type) {
+    case 'article': {
+      return <Article linkedItem={linkedItem} />;
+    }
+
+    case 'code_block': {
+      return <CodeBlock linkedItem={linkedItem} />;
+    }
+
+    case 'content_page': {
+      return <ContentPage linkedItem={linkedItem} />;
+    }
+
+    case 'tweet': {
+      return <Tweet linkedItem={linkedItem} />;
+    }
+
+    default:
+      return null;
+  }
+};
+```
+
+Finally, we also can replace both inline assets and links to other content items. We can add support for this in a similar way as the content items, we need to replace elements with React components.
+
+```jsx
+/** Replace HTML DOM node with React component. */
+function replaceNode(domNode, images, links, linkedItems) {
+  // Replace inline assets.
+  if (isAsset(domNode)) {
+    const id = getAssetId(domNode);
+    const image = getAsset(id, images);
+
+    return <InlineAsset description={image.description} id={image.imageId} url={image.url} />;
+  }
+
+  // Replace inline links.
+  if (isLink(domNode)) {
+    const content = getLinkContent(domNode);
+    const id = getLinkId(domNode);
+    const link = getLink(id, links);
+
+    return (
+      <InlineLink content={content} linkId={link.linkId} type={link.type} urlSlug={link.urlSlug} />
+    );
+  }
+
+  // Replace inline linked items.
+  if (isLinkedItem(domNode)) {
+    const codename = getCodeName(domNode);
+    const linkedItem = getLinkedItem(codename, linkedItems);
+
+    return <LinkedItem linkedItem={linkedItem} />;
+  }
+}
+```
+
+The `InlineAsset` component converts to a Picture element for responsive images.
+
+```jsx
+const InlineAsset = ({ description, id, url }) => {
+  const srcs = {
+    xl: `${url}?w=900&auto=format 1x, ${url}?w=1800&auto=format 2x`,
+    lg: `${url}?w=900&auto=format 1x, ${url}?w=1800&auto=format 2x`,
+    md: `${url}?w=900&auto=format 1x, ${url}?w=1800&auto=format 2x`,
+    sm: `${url}?w=768&auto=format 1x, ${url}?w=1536&auto=format 2x`,
+    xs: `${url}?w=576&auto=format 1x, ${url}?w=1152&auto=format 2x`,
+  };
+
+  return (
+    <Picture
+      key={id}
+      alt={description}
+      fallback={`${url}?w=320&auto=format 1x, ${url}?w=640&auto=format 2x`}
+      sources={Object.entries(srcs).map(([key, src]) => {
+        const rule = rules[key];
+        return <Source key={key} srcSet={src} media={rule} />;
+      })}
+    />
+  );
+};
+```
+
+Whereas the `InlineLink` component converts to a Gatsby Link component.
+
+```jsx
+const InlineLink = ({ content, linkId, type, urlSlug }) => {
+  let url;
+
+  switch (type) {
+    case 'article': {
+      url = `/articles/${urlSlug}`;
+      break;
+    }
+
+    case 'article_listing': {
+      url = `/articles`;
+      break;
+    }
+
+    case 'content_page': {
+      url = `/${urlSlug}`;
+      break;
+    }
+
+    case 'home_page': {
+      url = `/`;
+      break;
+    }
+
+    default: {
+      url = '/not-found';
+    }
+  }
+
+  return (
+    <Link key={linkId} to={url}>
+      {content}
+    </Link>
+  );
+};
+```

@@ -1,31 +1,14 @@
 ---
-import { useSanityClient } from 'astro-sanity';
-import groq from 'groq';
+import { getEntryBySlug } from 'astro:content';
+import ArticleCard from './ArticleCard.astro';
 
-interface Props {
-  portableText: {
-    value: any;
-  };
-}
+type Props = {
+  slug: string;
+};
 
-const { article: reference } = Astro.props.portableText.value;
+const { slug } = Astro.props;
 
-const client = useSanityClient();
-const article = await client.fetch(
-  groq`
-    *[_type == 'article' && _id == $id][0] { 
-      "slug": slug.current, 
-      summary,
-      title,
-    }
-  `,
-  { id: reference._ref },
-);
+const entry = await getEntryBySlug('articles', slug);
 ---
 
-<article>
-  <a href={`/articles/${article.slug}`}>
-    <h3>{article.title}</h3>
-    <p>{article.summary}</p>
-  </a>
-</article>
+{entry && <ArticleCard entry={entry} />}

@@ -1,0 +1,297 @@
+---
+title: Implementing search with Gatsby and Algolia
+date: 2020-01-27
+summary: Find out how easy it can be to index your Kontent.ai content using Algolia and have user-friendly search functionality on your website.
+---
+
+A very common requirement of any website is some form of site search; this can be as simple as a search against the titles of articles or as complex as a full-text search of a variety of different content types. The former scenario can easily be covered in Gatsby by using the built-in where filter on the field of your choice - however this would not provide any relevance, typo-tolerance or term-boosting.
+
+For the latter a search service is required; a platform that provides the ability to index your content and later execute search queries against it. For the purposes of this article we will be using [Algolia](https://www.algolia.com/).
+
+Algolia is a fantastic search provider that have an incredible feature-set that can be used with even their free tier. The free tier will likely be enough for a typical blog website (like this one for example). However, the Pro tier or about will be required for websites with a large amount of traffic and/or content.
+
+Ok, so the first thing that we need to do is register for an Algolia account and get our credentials. Once you've registered and logged into your account you will need to locate your credentials. You can find them under "API Keys" in your dashboard navigation. You will need the following information:
+
+- Application ID
+- Search-only API Key
+- Admin API Key
+
+You should never (and I mean never) expose your Admin API Key to the world - this should only be used on the "back-end" to add new records to your search indexes. The Search-only API Key can be used on the client-side to execute search queries and provide results to your users.
+
+Once you have your credentials we can get started in integrating Algolia with our Gatsby website. In my case I am using my own website where the content is provided by the Kontent.ai source plugin. In order to connect our Gatsby data to Algolia we can use the Gatsby plugin - [gatsby-plugin-algolia](https://github.com/algolia/gatsby-plugin-algolia).
+
+Firstly, install the plugin using your preferred package manager and add it to your gatsby-config file.
+
+```js
+{
+  resolve: `gatsby-plugin-algolia`,
+  options: {
+    appId: process.env.ALGOLIA_APP_ID,
+    apiKey: process.env.ALGOLIA_API_KEY,
+    indexName: process.env.ALGOLIA_INDEX_NAME,
+    queries: [],
+  },
+},
+```
+
+The plugin accepts the credentials you noted from your dashboard - this requires the Admin API Key as this plugin will be handling pushing your content to your search index. You will also need to specify the name of the index you wish to populate - in my case I am using environment variables to provide these options.
+
+The next step is to add a query to the plugin configuration to tell the plugin how to retrieve the data from your schema. If you have some basic requirements you could quite easily write a query to directly retrieve your data. This is perfect if you are indexing a single type of content - for example if you are using markdown or something similar.
+
+However, in my case I am wanting to index two different content types - articles and content pages. These are both content models that are defined in Kontent.ai and are included in the Gatsby schema with the KontentItemArticle and KontentItemContentPage types respectively. In order to index both content types I have a couple of options, the first of which is provided directly by the plugin itself through the use of a transformer function.
+
+The plugin supports the following structure for a "query":
+
+```js
+{
+  // The GraphQL query to execute.
+  query: ``,
+  // A transformer plugin, this takes the data from the query and returns the transformed data.
+  transformer: ({ data }) => data,
+  // The name of the index to populate - optional, overrides the top-level option.
+  indexName: 'index name to target',
+  // The Algolia index settings - optional, will use the Algolia defaults if not set.
+  settings: {},
+}
+```
+
+The "transformer" field will allow us to write a function that could take the results of two queries and return some normalized data structure. This is absolutely fine but means that if we want to add support for a new type of content we would need to both update the source query and also then amend the transformation function to normalize that data - this is more logic that I'd like inside my gatsby-config file.
+
+My preferred solution is to allow the Gatsby schema itself to do the work by defining a custom node type and then configure the plugin to query the data from that node type. This requires us to use Gatsby's [Schema Customisation API](https://www.gatsbyjs.org/docs/schema-customization/).
+
+First we need to use the `createSchemaCustomization` hook in our gatsby-node file. I like to use separate files for my gatsby-node hooks:
+
+```js
+exports.createPages = require('./utils/createPages.js');
+exports.createSchemaCustomization = require('./utils/createSchemaCustomization.js');
+exports.onCreateNode = require('./utils/onCreateNode');
+exports.onCreateWebpackConfig = require('./utils/onCreateWebpackConfig.js');
+```
+
+This allows the implementation detail for each hook to be separated out - just a small code organizational choice to keep the gatsby-node file itself nice and slim.
+
+So, in our `createSchemaCustomization` hook we want to create our custom node type.
+
+```js
+var get = require('lodash/get');
+
+var resolveUrl = require('./resolveUrl');
+
+module.exports = ({ actions }) => {
+  const { createFieldExtension, createTypes } = actions;
+
+  // Create @url resolver for auto-generating url fields.
+  createFieldExtension({
+    name: 'url',
+    args: {
+      slug: {
+        type: 'String!',
+        defaultValue: 'elements.slug.value',
+      },
+    },
+    extend(options) {
+      return {
+        resolve(source) {
+          const slug = get(source, options.slug);
+          const type = get(source, 'internal.type');
+          return resolveUrl(type, slug);
+        },
+      };
+    },
+  });
+
+  // Create custom schema interfaces and extend types.
+  const typeDefs = `
+    type SearchableItem implements Node @dontInfer {
+      id: ID!
+      content: String!
+      modified: Date! @dateformat
+      modified_unix: Int!
+      published: Date @dateformat
+      published_unix: Int
+      tags: [String!]
+      title: String!
+      type: String!
+      url: String!
+    }
+    interface NodeWithUrl @nodeInterface {
+      id: ID!
+      url: String!
+    }
+    type KontentItemArticle implements NodeWithUrl @infer {
+      id: ID!
+      url: String! @url
+    }
+    type KontentItemContentPage implements NodeWithUrl @infer {
+      id: ID!
+      url: String! @url
+    }
+  `;
+
+  createTypes(typeDefs);
+};
+```
+
+Let's break down what we're doing here. Firstly, we're defining a new field resolver to retrieve the correct URL for the content item. This is useful in my case as it uses a method I can share between both the client-side and the server-side code to ensure the URLs are generated consistently. The field resolver itself expects a "slug" value which is passed to the shared "resolveUrl" function to retrieve the resolved relative URL. The resolver can be used by including "@url" after any field of the String type.
+
+The next step is to create some GraphQL types and interfaces. The main type we're creating here is the SearchableItem type; this implements the Node interface and we have opted to disable the default Gatsby inference to improve performance. This type represents the final data structure we will be pushing to Algolia and therefore should represent the fields you wish to include in your Algolia index. We're also defining a NodeWithUrl interface which is used to provide easy access to a resolved URL field on content models - we will use this later when we create our SearchableItem nodes.
+
+Ok, so we have extended our schema and we can run gatsby develop and see the new "allSearchableItem" field on our Gatsby query type buuuut we have no data! Let's fix that.
+
+We can use the onCreateNode hook to create our SearchableItem nodes; we will also create these nodes as children of our original Article and Content Page nodes.
+
+```js
+module.exports = ({ actions, createNodeId, node }) => {
+  const { createNode, createParentChildLink } = actions;
+
+  // Create child searchable item node.
+  const searchableItemNode = createSearchableItemNode(node);
+
+  if (!searchableItemNode) {
+    return;
+  }
+
+  // Create new ID value based on parent ID.
+  searchableItemNode.id = createNodeId(`${node.id}__SearchableItem`);
+
+  // Create Gatsby node.
+  createNode(searchableItemNode);
+
+  // Create parent/child link.
+  createParentChildLink({ parent: node, child: searchableItemNode });
+};
+```
+
+The first step here is to create our new SearchableItem node.
+
+```js
+/**
+ * Create SearchableItem node.
+ * @param {Object} node
+ */
+function createSearchableItemNode(node) {
+  const typeFieldData = getTypeSpecificFieldData(node);
+
+  if (!typeFieldData) {
+    return null;
+  }
+
+  const fieldData = {
+    // System fields.
+    modified: node.system.lastModified,
+    modified_unix: toUnix(node.system.lastModified),
+    type: node.system.type,
+    url: resolveUrl(node.internal.type, node.elements.slug.value),
+
+    // Element fields.
+    ...typeFieldData,
+  };
+
+  const searchableItemNode = {
+    ...fieldData,
+
+    parent: node.id,
+    children: [],
+    internal: {
+      type: 'SearchableItem',
+      contentDigest: crypto.createHash(`md5`).update(JSON.stringify(fieldData)).digest(`hex`),
+    },
+  };
+
+  return searchableItemNode;
+}
+
+/**
+ * Get searchable field data for specific types.
+ * @param {Object} node
+ */
+function getTypeSpecificFieldData(node) {
+  switch (node.internal.type) {
+    case 'KontentItemArticle':
+      return {
+        content: node.elements.body.value,
+        published: node.elements.date.value,
+        published_unix: toUnix(node.elements.date.value),
+        tags: node.elements.article_tags.value.map((v) => v.name),
+        title: node.elements.title.value,
+      };
+
+    case 'KontentItemContentPage':
+      return {
+        content: node.elements.body.value,
+        title: node.elements.title.value,
+      };
+
+    default:
+      return null;
+  }
+}
+
+/**
+ * Convert string date representation to Unix timestamp.
+ * @param {String} date
+ */
+function toUnix(date) {
+  return Math.floor(new Date(date) / 1000);
+}
+```
+
+We first check if the node that has been created is of the type we wish to extend; this is a simple switch statement based on the internal GraphQL node type. If the node that has been created is not one we wish to make searchable then we simply return null which causes us to bail out of the node creation process.
+
+We then extend our type-specific field data with some fields that we want to include with all of our searchable nodes (like the created/modified dates) and also any required internal Gatsby fields.
+
+We then create a new ID value based on the original node's ID value suffixed with our SearchableItem's type name. This is a fairly common pattern when creating new nodes that are dependent on their parent's and do not have an appropriate ID value of their own.
+
+Finally we can actually create our new node and Gatsby will be able to return this data via the allSearchableNode field. However, one of the important things we need to do is also create a connection between our parent node and our new child node using the createParentChildLink method. This will add a new childSearchableItem field on our parent node type which returns it's child SearchableItem node. This is less useful in our case but can be very useful when creating other child nodes - for example childImageSharp when using the gatsby-image plugin.
+
+Right, that has been a fair amount of work but we now have a normalized data structure in our Gatsby schema that we can feed into our Algolia plugin! Now we can update our plugin configuration to use a query to retrieve this data.
+
+```js
+{
+  resolve: `gatsby-plugin-algolia`,
+  options: {
+    appId: process.env.ALGOLIA_APP_ID,
+    apiKey: process.env.ALGOLIA_API_KEY,
+    indexName: process.env.ALGOLIA_INDEX_NAME,
+    queries: [
+      {
+        query: `
+          {
+            allSearchableItem {
+              edges {
+                node {
+                  objectID: id
+                  content
+                  modified
+                  modified_unix
+                  published
+                  published_unix
+                  title
+                  type
+                  url
+                  _tags: tags
+                }
+              }
+            }
+          }
+        `,
+        settings: {
+          attributesToSnippet: [`content:20`],
+          customRanking: ['desc(published_unix)'],
+          searchableAttributes: ['title', 'content', '_tags', 'type'],
+        },
+        transformer: ({ data }) =>
+          data.allSearchableItem.edges.map(({ node }) => node),
+      },
+    ],
+  },
+},
+```
+
+The query definition allows us to also provide some options to Algolia to make our index more useful. In this example I am also configuring the index to do the following:
+
+- Create a 20 word snippet based on the content field; this can be used when presenting search results to the user.
+- Add a custom ranking factory based on the published_unix field; this promotes newer content over older content.
+- Define the fields that should be indexed when executing a search query with keyword search.
+
+Ok, so if we run our gatsby build command we should see our new index be created and populated with the results of the GraphQL query. The Algolia index dashboard will allow you to view the records in the index and execute search queries to test the index is returning appropriate results.

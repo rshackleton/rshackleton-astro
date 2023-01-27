@@ -1,0 +1,76 @@
+---
+title: Gotchas and Workarounds with Gatsby and Kontent.ai - Part 1
+date: 2019-03-10
+summary: Working with Kontent.ai and Gatsby isn't all sunshine and rainbows — although it mostly is 🌞🌈. Find out about some of the gotchas but also some simple  solutions.
+---
+
+import Image from '@/components/Image.astro';
+
+## Missing data or fields in the GraphQL schema
+
+This is one of the more problematic gotchas when working with Gatsby — and can apply to Gatsby regardless of the source plugins used.
+
+Gatsby generates the GraphQL schema based on the content provided by source plugins. This seems perfectly logical but does result in potentially build-breaking errors when the content is changed. For example, if you were to have a content type in Kontent.ai called `Article` with the following structure.
+
+<Image src="https://ik.imagekit.io/rshackleton/articles/article-content-type.png?ik-sdk-version=javascript-1.4.3&updatedAt=1674844574139" />
+
+As a developer you would expect to be able to query this new content type in your GraphQL schema immediately
+— with a query such as this:
+
+```graphql
+{
+  allKenticoCloudItemArticle {
+    edges {
+      node {
+        system {
+          codename
+        }
+        elements {
+          title {
+            value
+          }
+          slug {
+            value
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+However, to your dismay you see a GraphQL error in your build — or perhaps in GraphiQL if you check beforehand.
+
+```json
+{
+  "errors": [
+    {
+      "message": "Cannot query field \"allKenticoCloudItemArticle\" on type \"Query\".",
+      "locations": [
+        {
+          "line": 2,
+          "column": 3
+        }
+      ]
+    }
+  ]
+}
+```
+
+This is because Kontent.ai currently contains no content items using the `Article` content type — therefore Gatsby will not generate the associated schema. The only real solution to this problem is to ensure you always have at least one item for a particular content type. This can be problematic, all it takes is one content editor to delete that final item and boom the build now fails.
+
+Thankfully, Gatsby is [refactoring the GraphQL schema generation](https://github.com/gatsbyjs/gatsby/pull/11480) which should give source plugins the ability to create their own types. Hopefully, this means missing content will not result in missing schema types but only time will tell.
+
+For now my approach is to create content items which are named **Test [Type]**.
+
+<Image src="https://ik.imagekit.io/rshackleton/articles/test-article.png?ik-sdk-version=javascript-1.4.3&updatedAt=1674844907799" />
+
+These pages are then excluded from the site in the `createPages` hook and in any queries or list pages.
+
+```js
+/** Check if node is a test node and shouldn't be shown on the website. */
+function isTestItem(node) {
+  const codename = get(node, 'system.codename');
+  return codename && codename.indexOf('test_') === 0;
+}
+```

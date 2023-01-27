@@ -1,0 +1,40 @@
+---
+title: Using Gatsby Image with Kentico Kontent
+date: 2020-02-17
+summary: Learn how to leverage the powerful Gatsby Image package with Kentico Kontent's media library.
+---
+
+When building a website using Gatsby one of the incredibly useful packages is [Gatsby Image](https://www.gatsbyjs.org/packages/gatsby-image/). This package handles rendering responsive images with additional features such as lazy loading, traced SVGs and "blur-up" animation. However, the official Kentico Kontent source plugin does not provide any support for the package out-of-the-box.
+
+The Gatsby Image component expects either a `FixedObject` or `FluidObject` to be supplied; other plugins include GraphQL fields on `File` nodes which can be queried to generate these objects. For example, [gatsby-transformer-sharp](https://www.gatsbyjs.org/packages/gatsby-transformer-sharp/) adds a `childImageSharp` field with `fixed` and `fluid` fields.
+
+In order to bridge the gap and provide support for Gatsby Image we can use the `createRemoteFileNode` function exported by [gatsby-source-filesystem](https://www.gatsbyjs.org/packages/gatsby-source-filesystem/) to create File nodes within our GraphQL schema. This will download the remote asset and make it available to be processed by `gatsby-transformer-sharp`.
+
+However, this approach has some downsides.
+
+- If there are a large number of assets then downloading can be a slow and time-consuming task.
+- Once the images have been downloaded they need to be processed by Sharp to generate the various image variants. On a relatively basic website with less than 100 unique assets this has been noted to add several minutes to the build time.
+
+An alternative route would be to create a custom transformer plugin to leverage the [image transformation API](https://docs.kontent.ai/reference/image-transformation) available with Kentico Kontent. Fortunately, this is exactly what I have created with the [@rshackleton/gatsby-transformer-kontent-image](https://www.gatsbyjs.org/packages/@rshackleton/gatsby-transformer-kontent-image/) package.
+
+The plugin will create new fields on the existing `KontentAsset` type which provide the data required by Gatsby Image. They can be used by including them in your GraphQL queries as shown in the example below.
+
+```graphql
+{
+  allKontentItemArticle {
+    nodes {
+      elements {
+        banner {
+          value {
+            fixed(width: 1000) {
+              ...KontentAssetFixed
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Finally, as using both the source plugin and the image transformer together would be a common requirement of any projects using Kentico Kontent, I have also created a new Gatsby Theme called [@rshackleton/gatsby-theme-kontent](https://www.npmjs.com/package/@rshackleton/gatsby-theme-kontent). This includes both plugins as it's default configuration and accepts options for each. In the future I hope to expand the theme to include components that will assist in rendering linked items and components within rich text fields.

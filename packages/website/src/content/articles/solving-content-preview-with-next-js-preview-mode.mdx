@@ -1,0 +1,201 @@
+---
+title: Solving content preview with Next.js Preview Mode
+date: 2020-05-11
+summary: We all know content editors expect the ability to preview their draft content. Learn how easy it can be to enable content preview with Kontent.ai and Next.js! 🙌
+---
+
+import Image from '@/components/Image.astro';
+
+In this article I will explain why live previews are important for content editors' experience and why are they such an issue these days. I'll introduce Next.js, compare it with Gatsby, and share my experience working with both.
+
+## Why is content preview so important?
+
+Content preview is the ability to view the unpublished, draft content created in a CMS within the context of your website design. Content editors and clients expect this functionality as standard. Why? Because all mainstream CMS products include a preview feature out of the box!
+
+Asking a content editor to “trust” the website to display their content correctly is asking them to take a leap of faith. Whilst we know (or hope) that the website will render their content correctly, there is always the chance a bug could creep through, or the alignment of this content could be slightly incorrect.
+
+Enabling content preview simply provides a level of confidence and security in a content editor’s workflow. Plus, we all know it’s a much easier conversation to fix a rendering bug in a preview environment before it hits the production environment!
+
+## Why can preview be so complicated with JAMstack?
+
+The fact that headless CMS doesn't use the traditional WYSIWYG editing experience editors have come to expect is by design. A headless CMS often contains content for multiple channels, therefore providing a visual representation within the confines of the CMS itself could introduce bias or be misleading for non-web channels.
+
+Therefore, it is the responsibility of the website to allow draft content to be displayed for preview purposes. Unfortunately, for most Static Site Generators (SSGs) this requires the entire website to rebuilt with the draft content. As the number of content items increases, the build time for these sites could easily be several minutes. Content editors will not wish to wait that long to preview their content!
+
+## Why use JAMstack, let’s just use a dynamic website. Right?
+
+A dynamically rendered website can easily handle rendering published content and draft content based on a toggle, such as via a query string value or a cookie. The draft content is retrieved on-demand, bypassing caches, and therefore provides a synchronous on-demand preview experience.
+
+A static website cannot achieve this, even with an incremental build approach the preview experience is still an asynchronous process. If the build has not been completed before a content editor “previews” their content they will see stale data.
+
+Conversely, a dynamically rendered website often cannot achieve the same level of performance as a static website. The content needs to be retrieved on-demand, hopefully from a cache, the output HTML needs to be generated and then served to the user. Even when cached this will include a degree of latency when compared to a static website served from a CDN.
+
+Furthermore, optimisations like serving only the CSS and JS code needed to render the page and including offline support can be much trickier with a dynamic website.
+
+Ok, so we want the benefits of on-demand preview but without compromising performance. Well, fortunately, we can use a hybrid approach.
+
+## A hybrid approach is a solution
+
+What do we mean by a hybrid approach? Usually, we must choose between static generation (SSG) or server-side rendering (SSR). A hybrid solution supports both options on a per-page basis. We can use the server-side rendering approach to handle our on-demand previews but generate static pages at build time to produce optimised pages we can serve from a CDN.
+
+Another advantage of a hybrid solution is the ability to use the same codebase to render both the SSG and SSR versions of a page. No duplicating code to handle both use-cases!
+
+## Introducing Next.js
+
+So, the framework of choice for a hybrid solution is Next.js from Vercel (previously Zeit). Next.js is a zero-configuration framework for developing dynamic React applications; no more worrying about the complex configurations and plugins typically involved in supporting server-side rendering.
+
+Next.js runs on any NodeJS server, although they often use their own Now service in examples. You can easily run the framework on your hardware, with your preferred cloud provider or with an integrated platform such as Now.
+
+Most importantly, the recent 9.3 release introduced static site generation support and a powerful Preview Mode API. This allows us to achieve the holy grail of generating static versions of our pages whilst supporting on-demand previews!
+
+## Next.js vs Gatsby
+
+GatsbyJS is one of the most popular static-site generators currently available. It provides a great developer experience, produces optimised static assets and has a suite of plugins available to streamline the development process.
+
+However, Gatsby is 100% static only. Gatsby does provide a content preview option, but I find it to be far from perfect and it does not provide an **on-demand** preview.
+
+Some of the key issues or concerns are:
+
+Using Gatsby Cloud’s content preview requires the “Real-time edit” feature, this is rate-limited to 25/day on their free tier or 3000/month on their Professional tier. For content-heavy websites, this can be restrictive.
+
+Their content preview supports “first-class plugins” only, therefore not all data sources are supported.
+
+It is possible to host your own preview mode by running your Gatsby site in dev mode (using gatsby develop) with the refresh endpoint enabled. However, this means hosting another instance of your website on a NodeJS server which is more hosting overhead.
+
+So, what happens if you’ve built a site using Gatsby and wish to migrate over to Next.js? Well, this is a relatively smooth process. First, you can migrate over your React components without significant changes as the presentational side of the React development is largely the same.
+
+Some components provided by Gatsby such as the Link component would need to be replaced with Link component from Next.js and React Helmet would be replaced by the Head component.
+
+The main difference is in data management and retrieval. Gatsby provides all data in the GraphQL schema via source plugins whereas Next.js expects you to source your content in the `getStaticProps` or `getServerSideProps` APIs.
+
+## How do we enable Preview Mode in Next.js?
+
+The process is well explained by the Next.js documentation but here is the approach I've taken to connect Preview Mode to a Kontent.ai instance.
+
+First, you will need to create a page template in Next.js which uses content from your preferred provider.
+
+```ts
+/**
+ * Execute server-side data fetching.
+ */
+export const getStaticProps: GetStaticProps = async ({ params, preview }) => {
+  console.log(`Loading article content, preview mode is ${!!preview}`);
+
+  const slug = params?.slug as string;
+  const service = new ArticleService(preview ?? false);
+  const article = await service.getArticle(slug);
+
+  if (!article) {
+    return { props: {} };
+  }
+
+  const props: IArticleProps = {
+    article: {
+      id: article.system.id,
+      codename: article.system.codename,
+      body: article.body.resolveHtml(),
+      slug: article.slug.value,
+      title: article.title.value,
+      metadata: {
+        title: article.metadata__page_title.value,
+      },
+    },
+  };
+
+  return { props };
+};
+```
+
+In this case, I am fetching content with the Kontent.ai SDK. The SDK provides the option to request content via their live or preview API. The `getStaticProps` export provides a boolean value indicating whether the current request should return live or preview content. This boolean value is passed through to the Kontent.ai SDK.
+
+Our template is now set up to support preview mode. 🎉
+
+Ok, so the last step is a little more involved. Depending on your CMS you will need to define the preview URL for your content items. With Kontent.ai this is done in the project configuration for each content model.
+
+<Image src="https://ik.imagekit.io/rshackleton/articles/nextjs-kontent-preview-urls.png?ik-sdk-version=javascript-1.4.3&updatedAt=1674842544241" />
+
+The URL is defined by a template with the URL slug and language being inserted as variables - e.g. `{URLslug}` above. You will want to point your preview URL to the path `/api/preview`. Now we can write the code that will handle that request.
+
+```ts
+import { NextApiRequest, NextApiResponse } from 'next';
+
+import ArticleService from '../../services/ArticleService';
+
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+  // Validate the incoming request.
+  if (req.query.secret !== process.env.PREVIEW_TOKEN) {
+    return res.status(401).json({ message: 'Invalid token' });
+  }
+
+  if (!req.query.slug) {
+    return res.status(401).json({ message: 'Invalid slug' });
+  }
+
+  let location: string | null;
+
+  // Determine url based on type.
+  switch (req.query.type) {
+    case 'article':
+      location = await resolveArticle(req.query.slug as string);
+      break;
+
+    case 'home_page':
+      location = await resolveHomePage(req.query.slug as string);
+      break;
+
+    default:
+      return res.status(401).json({ message: 'Invalid type' });
+  }
+
+  // Ensure we've found a valid page to redirect to.
+  if (!location) {
+    return res.status(401).json({ message: 'Invalid slug' });
+  }
+
+  // Enable Preview Mode.
+  res.setPreviewData({});
+
+  // Redirect to the page.
+  res.writeHead(307, { Location: location });
+  res.end();
+};
+
+/**
+ * Retrieve the article in preview mode.
+ * @param slug
+ */
+async function resolveArticle(slug: string): Promise<string | null> {
+  const service = new ArticleService(true);
+  const article = await service.getArticle(slug);
+
+  if (!article) {
+    return null;
+  }
+
+  return `/articles/${article?.slug.value ?? ''}`;
+}
+
+/**
+ * Ensure path is the root.
+ * @param slug
+ */
+async function resolveHomePage(slug: string): Promise<string | null> {
+  if (slug !== '/') {
+    return null;
+  }
+
+  return '/';
+}
+```
+
+Firstly, we check the **secret** parameter to ensure this request is coming from a trusted source and that we have a valid slug value. Next, we check the type of the content item - this was a hard-coded value in the URL template. If we determine that a valid content item exists for the slug and content type then we will receive a new location value. Finally, we enable preview mode with the Next.js API and trigger a redirect to the correct URL.
+
+The status is stored in a session cookie so all content will be loaded in preview mode until the current session has ended, or cookies have been cleared.
+
+So we now have a working content preview thanks to Next.js Preview Mode!
+
+Check the following links for documentation and further information on Next.js and Kontent.ai:
+
+- [Next.js home page](https://nextjs.org/)
+- [Next.js Preview Mode documentation](https://nextjs.org/docs/advanced-features/preview-mode)
+- [Kontent.ai](https://kontent.ai/?utm_source=solving-content-preview-with-next-js-preview-mode&utm_medium=mvp_379238&utm_campaign=extended_trial)

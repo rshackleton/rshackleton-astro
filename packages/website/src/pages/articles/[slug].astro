@@ -1,35 +1,29 @@
 ---
-import ArticleSummary from '@/components/ArticleSummary.astro';
-import Code from '@/components/Code.astro';
 import Hero from '@/components/Hero.astro';
-import Image from '@/components/Image.astro';
-import Tweet from '@/components/Tweet.astro';
 import { formatDate } from '@/helpers/date';
 import Layout from '@/layouts/Layout.astro';
-import { getArticle, getArticles } from '@/sanity/articles';
-import { PortableText } from '@rshackleton/astro-portabletext';
+import { CollectionEntry, getCollection } from 'astro:content';
+
+type Props = {
+  entry: CollectionEntry<'articles'>;
+};
 
 export async function getStaticPaths() {
-  const articles = await getArticles();
-  return articles.map((article) => ({ params: { slug: article.slug } }));
+  const articles = await getCollection('articles', (entry) => !entry.data.external);
+
+  return articles.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
 }
 
-const { content, date, seo, title } = await getArticle(Astro.params.slug ?? '');
+const { entry } = Astro.props;
+const { Content } = await entry.render();
 ---
 
-<Layout seo={seo}>
-  <Hero title={title} subtitle={formatDate(date)} />
+<Layout seo={{ title: entry.data.title, description: entry.data.summary }}>
+  <Hero title={entry.data.title} subtitle={formatDate(entry.data.date)} />
   <section class="rich-text container mx-auto">
-    <PortableText
-      components={{
-        types: {
-          articleSummary: ArticleSummary,
-          code: Code,
-          image: Image,
-          tweet: Tweet,
-        },
-      }}
-      value={content}
-    />
+    <Content />
   </section>
 </Layout>

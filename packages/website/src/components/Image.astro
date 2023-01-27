@@ -1,17 +1,7 @@
 ---
-import { createImageBuilder, useSanityClient } from 'astro-sanity';
-
 interface Props {
-  portableText: {
-    value: any;
-  };
+  src: string;
 }
-
-const { value } = Astro.props.portableText;
-
-const client = useSanityClient();
-const builder = createImageBuilder(client);
-const imageUrl = builder.image(value).url();
 ---
 
-<img alt="" loading="lazy" src={imageUrl} />
+<img alt="" loading="lazy" src={Astro.props.src} />
