@@ -53,7 +53,7 @@ const AlphabetCipher: React.FC = () => {
     <form className="mx-auto flex max-w-lg flex-col gap-y-8">
       <fieldset className="grid grid-cols-[auto,1fr] items-center gap-x-4 gap-y-4">
         <label
-          className="from-primary-900 to-primary-700 bg-gradient-to-r bg-clip-text text-lg font-medium text-transparent"
+          className="from-primary-900 to-primary-700 bg-gradient-to-r bg-clip-text text-right text-lg font-medium text-transparent"
           htmlFor="secret"
         >
           Secret:
@@ -68,7 +68,7 @@ const AlphabetCipher: React.FC = () => {
         />
 
         <label
-          className="from-primary-900 to-primary-700 bg-gradient-to-r bg-clip-text text-lg font-medium text-transparent"
+          className="from-primary-900 to-primary-700 bg-gradient-to-r bg-clip-text text-right text-lg font-medium text-transparent"
           htmlFor="input"
         >
           Input:
