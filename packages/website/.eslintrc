@@ -19,14 +19,8 @@
       "parser": "@typescript-eslint/parser",
       "plugins": ["@typescript-eslint"],
       "rules": {
-        "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }]
-      }
-    },
-    {
-      "files": ["*.mjs"],
-      "parserOptions": {
-        "ecmaVersion": "latest",
-        "sourceType": "module"
+        "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
+        "@typescript-eslint/triple-slash-reference": "off"
       }
     },
     {
@@ -35,7 +29,8 @@
       "parser": "@typescript-eslint/parser",
       "plugins": ["@typescript-eslint"],
       "rules": {
-        "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }]
+        "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
+        "@typescript-eslint/triple-slash-reference": "off"
       }
     },
     {
@@ -44,7 +39,19 @@
       "parser": "@typescript-eslint/parser",
       "plugins": ["@typescript-eslint"],
       "rules": {
-        "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }]
+        "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
+        "@typescript-eslint/triple-slash-reference": "off"
+      }
+    },
+    {
+      "files": ["*.mdx"],
+      "extends": ["plugin:mdx/recommended"]
+    },
+    {
+      "files": ["*.mjs"],
+      "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
       }
     }
   ]

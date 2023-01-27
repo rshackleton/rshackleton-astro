@@ -8,5 +8,8 @@
       "@/*": ["./src/*"]
     },
     "types": ["astro/client", "node"]
+  },
+  "mdx": {
+    "plugins": ["remark-frontmatter"]
   }
 }
