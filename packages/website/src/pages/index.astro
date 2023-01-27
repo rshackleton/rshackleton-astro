@@ -1,11 +1,8 @@
 ---
-import Sections from '@/components/Sections.astro';
-import Layout from '@/layouts/Layout.astro';
+import HomePage from '@/components/templates/HomePage/HomePage.astro';
 import { getHome } from '@/sanity/home';
 
 const { sections, seo } = await getHome();
 ---
 
-<Layout seo={seo}>
-  <Sections sections={sections} />
-</Layout>
+<HomePage sections={sections} seo={seo} />

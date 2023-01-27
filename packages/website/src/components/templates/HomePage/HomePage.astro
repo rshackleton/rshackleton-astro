@@ -1,0 +1,15 @@
+---
+import Sections from '@/components/Sections.astro';
+import Layout from '@/layouts/Layout.astro';
+
+type Props = {
+  sections: SectionModel[];
+  seo: SEOModel;
+};
+
+const { sections, seo } = Astro.props;
+---
+
+<Layout seo={seo}>
+  <Sections sections={sections} />
+</Layout>

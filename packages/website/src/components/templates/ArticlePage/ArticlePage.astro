@@ -1,0 +1,20 @@
+---
+import Hero from '@/components/Hero.astro';
+import { formatDate } from '@/helpers/date';
+import Layout from '@/layouts/Layout.astro';
+
+type Props = {
+  date: Date;
+  summary: string;
+  title: string;
+};
+
+const { date, summary, title } = Astro.props;
+---
+
+<Layout seo={{ title: title, description: summary }}>
+  <Hero title={title} subtitle={formatDate(date)} />
+  <section class="rich-text container mx-auto">
+    <slot />
+  </section>
+</Layout>

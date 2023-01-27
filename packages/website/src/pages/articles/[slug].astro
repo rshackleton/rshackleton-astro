@@ -1,7 +1,5 @@
 ---
-import Hero from '@/components/Hero.astro';
-import { formatDate } from '@/helpers/date';
-import Layout from '@/layouts/Layout.astro';
+import ArticlePage from '@/components/templates/ArticlePage/ArticlePage.astro';
 import { CollectionEntry, getCollection } from 'astro:content';
 
 type Props = {
@@ -19,11 +17,10 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
+
+const { date, summary, title } = entry.data;
 ---
 
-<Layout seo={{ title: entry.data.title, description: entry.data.summary }}>
-  <Hero title={entry.data.title} subtitle={formatDate(entry.data.date)} />
-  <section class="rich-text container mx-auto">
-    <Content />
-  </section>
-</Layout>
+<ArticlePage date={date} summary={summary} title={title}>
+  <Content />
+</ArticlePage>
