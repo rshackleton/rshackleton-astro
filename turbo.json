@@ -11,7 +11,7 @@
       "outputs": ["dist/**"]
     },
     "@rshackleton/website#build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "@rshackleton/vite-plugin-component-map#build"],
       "env": [
         "SANITY_STUDIO_DATASET",
         "SANITY_STUDIO_PROJECT_ID",
