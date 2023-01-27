@@ -6,6 +6,7 @@ const articlesCollection = defineCollection({
     draft: z.boolean().optional(),
     external: z.string().optional(),
     summary: z.string(),
+    tags: z.array(z.string()).optional(),
     title: z.string(),
   }),
 });

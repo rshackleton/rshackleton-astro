@@ -3,44 +3,87 @@ import * as React from 'react';
 import { decode, encode } from './cipher';
 import Output from './Output';
 
-const DEFAULT_SECRET = 'scones';
-const DEFAULT_INPUT = 'alphabet cipher';
-const DEFAULT_OUTPUT = encode(sanitize(DEFAULT_INPUT), DEFAULT_SECRET);
+type EncodeAction = {
+  type: 'encode';
+  payload: { input: string; secret: string };
+};
+
+type DecodeAction = {
+  type: 'decode';
+  payload: { input: string; secret: string };
+};
+
+type ActionKind = DecodeAction | EncodeAction;
+
+type ReducerValue = {
+  input: string;
+  output: string;
+  secret: string;
+};
 
 const AlphabetCipher: React.FC = () => {
-  const [input, setInput] = React.useState(DEFAULT_INPUT);
-  const [output, setOutput] = React.useState(DEFAULT_OUTPUT);
-  const [secret, setSecret] = React.useState(DEFAULT_SECRET);
+  const [value, dispatch] = React.useReducer(
+    (state: ReducerValue, action: ActionKind): ReducerValue => {
+      switch (action.type) {
+        case 'encode':
+          return {
+            input: action.payload.input,
+            secret: action.payload.secret,
+            output: encode(action.payload.input, action.payload.secret),
+          };
+
+        case 'decode':
+          return {
+            input: action.payload.input,
+            secret: action.payload.secret,
+            output: decode(action.payload.input, action.payload.secret),
+          };
+
+        default:
+          return { ...state };
+      }
+    },
+    { input: 'meetmebythetree', output: 'egsgqwtahuiljgs', secret: 'scones' },
+  );
+
+  const [inputRaw, setInputRaw] = React.useState(value.input);
+  const [secretRaw, setSecretRaw] = React.useState(value.secret);
 
   return (
-    <form className="mx-auto flex max-w-lg flex-col gap-y-4">
+    <form className="mx-auto flex max-w-lg flex-col gap-y-8">
       <fieldset className="grid grid-cols-[auto,1fr] items-center gap-x-4 gap-y-4">
-        <label className="text-primary-900 text-base font-medium" htmlFor="secret">
+        <label
+          className="from-primary-900 to-primary-700 bg-gradient-to-r bg-clip-text text-lg font-medium text-transparent"
+          htmlFor="secret"
+        >
           Secret:
         </label>
         <input
           id="secret"
-          className="border shadow-sm"
+          className="border px-2 py-1 font-mono tracking-[4px] shadow-sm"
           name="secret"
           type="password"
-          value={secret}
-          onChange={(event) => setSecret(event.target.value)}
+          value={secretRaw}
+          onChange={(event) => setSecretRaw(sanitize(event.target.value))}
         />
 
-        <label className="text-primary-900 text-base font-medium" htmlFor="input">
+        <label
+          className="from-primary-900 to-primary-700 bg-gradient-to-r bg-clip-text text-lg font-medium text-transparent"
+          htmlFor="input"
+        >
           Input:
         </label>
         <input
           id="input"
-          className="border shadow-sm"
+          className="border px-2 py-1 font-mono tracking-[4px] shadow-sm"
           name="input"
           type="text"
-          value={input}
-          onChange={(event) => setInput(event.target.value)}
+          value={inputRaw}
+          onChange={(event) => setInputRaw(sanitize(event.target.value))}
         />
       </fieldset>
 
-      <div className="flex gap-x-4">
+      <div className="flex justify-center gap-x-4">
         <button
           className="bg-primary-700 hover:bg-primary-600 rounded border py-3 px-5 text-base font-bold text-white transition"
           name="encode"
@@ -60,18 +103,28 @@ const AlphabetCipher: React.FC = () => {
         </button>
       </div>
 
-      {output && <Output from={input} to={output} />}
+      <div className="flex justify-center">
+        <Output from={value.input} to={value.output} />
+      </div>
     </form>
   );
 
   function handleEncode(event: SyntheticEvent) {
     event.preventDefault();
-    setOutput(encode(sanitize(input), secret));
+
+    dispatch({
+      type: 'encode',
+      payload: { input: sanitize(inputRaw), secret: sanitize(secretRaw) },
+    });
   }
 
   function handleDecode(event: SyntheticEvent) {
     event.preventDefault();
-    setOutput(decode(sanitize(input), secret));
+
+    dispatch({
+      type: 'decode',
+      payload: { input: sanitize(inputRaw), secret: sanitize(secretRaw) },
+    });
   }
 };
 

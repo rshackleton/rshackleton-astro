@@ -6,15 +6,16 @@ import Layout from '@/layouts/Layout.astro';
 type Props = {
   date: Date;
   summary: string;
+  tags?: string[];
   title: string;
 };
 
-const { date, summary, title } = Astro.props;
+const { date, summary, tags, title } = Astro.props;
 ---
 
 <Layout seo={{ title: title, description: summary }}>
-  <Hero title={title} subtitle={formatDate(date)} />
-  <section class="rich-text container mx-auto">
+  <Hero title={title} subtitle={formatDate(date)} tags={tags} />
+  <section class="rich-text mx-auto max-w-[80ch] px-4">
     <slot />
   </section>
 </Layout>
