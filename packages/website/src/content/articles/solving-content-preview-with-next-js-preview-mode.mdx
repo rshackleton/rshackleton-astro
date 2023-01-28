@@ -9,7 +9,7 @@ import Image from '@/components/molecules/Image/Image.astro';
 
 In this article I will explain why live previews are important for content editors' experience and why are they such an issue these days. I'll introduce Next.js, compare it with Gatsby, and share my experience working with both.
 
-## Why is content preview so important?
+# Why is content preview so important?
 
 Content preview is the ability to view the unpublished, draft content created in a CMS within the context of your website design. Content editors and clients expect this functionality as standard. Why? Because all mainstream CMS products include a preview feature out of the box!
 
@@ -17,13 +17,13 @@ Asking a content editor to “trust” the website to display their content corr
 
 Enabling content preview simply provides a level of confidence and security in a content editor’s workflow. Plus, we all know it’s a much easier conversation to fix a rendering bug in a preview environment before it hits the production environment!
 
-## Why can preview be so complicated with JAMstack?
+# Why can preview be so complicated with JAMstack?
 
 The fact that headless CMS doesn't use the traditional WYSIWYG editing experience editors have come to expect is by design. A headless CMS often contains content for multiple channels, therefore providing a visual representation within the confines of the CMS itself could introduce bias or be misleading for non-web channels.
 
 Therefore, it is the responsibility of the website to allow draft content to be displayed for preview purposes. Unfortunately, for most Static Site Generators (SSGs) this requires the entire website to rebuilt with the draft content. As the number of content items increases, the build time for these sites could easily be several minutes. Content editors will not wish to wait that long to preview their content!
 
-## Why use JAMstack, let’s just use a dynamic website. Right?
+# Why use JAMstack, let’s just use a dynamic website. Right?
 
 A dynamically rendered website can easily handle rendering published content and draft content based on a toggle, such as via a query string value or a cookie. The draft content is retrieved on-demand, bypassing caches, and therefore provides a synchronous on-demand preview experience.
 
@@ -35,13 +35,13 @@ Furthermore, optimisations like serving only the CSS and JS code needed to rende
 
 Ok, so we want the benefits of on-demand preview but without compromising performance. Well, fortunately, we can use a hybrid approach.
 
-## A hybrid approach is a solution
+# A hybrid approach is a solution
 
 What do we mean by a hybrid approach? Usually, we must choose between static generation (SSG) or server-side rendering (SSR). A hybrid solution supports both options on a per-page basis. We can use the server-side rendering approach to handle our on-demand previews but generate static pages at build time to produce optimised pages we can serve from a CDN.
 
 Another advantage of a hybrid solution is the ability to use the same codebase to render both the SSG and SSR versions of a page. No duplicating code to handle both use-cases!
 
-## Introducing Next.js
+# Introducing Next.js
 
 So, the framework of choice for a hybrid solution is Next.js from Vercel (previously Zeit). Next.js is a zero-configuration framework for developing dynamic React applications; no more worrying about the complex configurations and plugins typically involved in supporting server-side rendering.
 
@@ -49,7 +49,7 @@ Next.js runs on any NodeJS server, although they often use their own Now service
 
 Most importantly, the recent 9.3 release introduced static site generation support and a powerful Preview Mode API. This allows us to achieve the holy grail of generating static versions of our pages whilst supporting on-demand previews!
 
-## Next.js vs Gatsby
+# Next.js vs Gatsby
 
 GatsbyJS is one of the most popular static-site generators currently available. It provides a great developer experience, produces optimised static assets and has a suite of plugins available to streamline the development process.
 
@@ -69,7 +69,7 @@ Some components provided by Gatsby such as the Link component would need to be r
 
 The main difference is in data management and retrieval. Gatsby provides all data in the GraphQL schema via source plugins whereas Next.js expects you to source your content in the `getStaticProps` or `getServerSideProps` APIs.
 
-## How do we enable Preview Mode in Next.js?
+# How do we enable Preview Mode in Next.js?
 
 The process is well explained by the Next.js documentation but here is the approach I've taken to connect Preview Mode to a Kontent.ai instance.
 

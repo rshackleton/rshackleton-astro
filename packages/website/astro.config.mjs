@@ -1,4 +1,7 @@
 import { defineConfig } from 'astro/config';
+import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
+import rehypeExternalLinks from 'rehype-external-links';
+import remarkBehead from 'remark-behead';
 
 // https://astro.build/config
 import tailwind from '@astrojs/tailwind';
@@ -25,7 +28,10 @@ export default defineConfig({
       },
     }),
     react(),
-    mdx(),
+    mdx({
+      rehypePlugins: [[rehypeExternalLinks, { target: '_blank' }], rehypeAccessibleEmojis],
+      remarkPlugins: [[remarkBehead, { minDepth: 2 }]],
+    }),
     sanity({
       apiVersion: new Date().toISOString().substring(0, 10),
       dataset: process.env.SANITY_STUDIO_DATASET,

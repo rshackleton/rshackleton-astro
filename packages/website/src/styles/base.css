@@ -13,61 +13,55 @@
 
     > * {
       @apply mb-8;
-    }
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      @apply from-primary-400 to-primary-300 bg-gradient-to-r bg-clip-text text-xl font-bold text-transparent;
-    }
-
-    p {
-      a {
-        @apply from-primary-400 to-primary-300 hover:border-primary-400 border-b-2 border-transparent bg-gradient-to-r bg-clip-text font-medium text-transparent transition;
+      &:is(h1, h2, h3, h4, h5, h6) {
+        @apply from-primary-400 to-primary-300 bg-gradient-to-r bg-clip-text text-xl font-bold text-transparent;
       }
 
-      b,
-      strong {
-        @apply font-medium;
+      &:is(p) {
+        a {
+          @apply from-primary-400 to-primary-300 hover:border-primary-400 border-b-2 border-transparent bg-gradient-to-r bg-clip-text font-medium text-transparent transition;
+        }
+
+        b,
+        strong {
+          @apply font-medium;
+        }
+
+        code {
+          @apply rounded bg-neutral-200 p-1 font-mono text-base tracking-wider text-neutral-600;
+        }
       }
 
-      code {
-        @apply rounded bg-neutral-200 p-1 font-mono text-base tracking-wider text-neutral-600;
-      }
-    }
+      &:is(ol, ul) {
+        @apply ml-6;
 
-    ol,
-    ul {
-      @apply ml-6;
-
-      a {
-        @apply from-primary-400 to-primary-300 hover:border-primary-400 border-b-2 border-transparent bg-gradient-to-r bg-clip-text font-medium text-transparent transition;
-      }
-    }
-
-    ul {
-      @apply list-disc;
-    }
-
-    ol {
-      @apply list-decimal;
-    }
-
-    pre {
-      @apply max-h-[min(1000px,80vh)] overflow-auto rounded p-4 text-base;
-
-      &::-webkit-scrollbar {
-        @apply h-2 w-2;
+        a {
+          @apply from-primary-400 to-primary-300 hover:border-primary-400 border-b-2 border-transparent bg-gradient-to-r bg-clip-text font-medium text-transparent transition;
+        }
       }
 
-      &::-webkit-scrollbar-track {
+      &:is(ul) {
+        @apply list-disc;
       }
 
-      &::-webkit-scrollbar-thumb {
-        @apply rounded bg-neutral-300/50;
+      &:is(ol) {
+        @apply list-decimal;
+      }
+
+      &:is(pre) {
+        @apply max-h-[min(1000px,80vh)] overflow-auto rounded p-4 text-base;
+
+        &::-webkit-scrollbar {
+          @apply h-2 w-2;
+        }
+
+        &::-webkit-scrollbar-track {
+        }
+
+        &::-webkit-scrollbar-thumb {
+          @apply rounded bg-neutral-300/50;
+        }
       }
     }
   }
