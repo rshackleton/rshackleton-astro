@@ -31,7 +31,7 @@ const { anchorId, content, cta, subtitle, tags, title } = Astro.props;
     }
     {content && <p class="mx-auto max-w-prose pb-8 text-lg">{content}</p>}
     {
-      cta && (
+      cta && cta.url && (
         <a
           class="bg-primary-700 hover:bg-primary-600 inline-block scale-100 rounded py-3 px-5 text-base font-bold text-white subpixel-antialiased transition will-change-transform hover:scale-110"
           href={cta.url}
