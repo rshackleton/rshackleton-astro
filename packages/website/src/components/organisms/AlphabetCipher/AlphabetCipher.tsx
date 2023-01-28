@@ -52,30 +52,24 @@ const AlphabetCipher: React.FC = () => {
   return (
     <form className="mx-auto flex max-w-lg flex-col gap-y-8">
       <fieldset className="grid grid-cols-[auto,1fr] items-center gap-x-4 gap-y-4">
-        <label
-          className="from-primary-900 to-primary-700 bg-gradient-to-r bg-clip-text text-right text-lg font-medium text-transparent"
-          htmlFor="secret"
-        >
+        <label className="gradient-primary text-right text-lg font-medium" htmlFor="secret">
           Secret:
         </label>
         <input
           id="secret"
-          className="border px-2 py-1 font-mono tracking-[4px] shadow-sm"
+          className="rounded border border-neutral-500 bg-neutral-800 px-2 py-1 font-mono tracking-[4px] text-neutral-100 shadow-sm"
           name="secret"
           type="password"
           value={secretRaw}
           onChange={(event) => setSecretRaw(sanitize(event.target.value))}
         />
 
-        <label
-          className="from-primary-900 to-primary-700 bg-gradient-to-r bg-clip-text text-right text-lg font-medium text-transparent"
-          htmlFor="input"
-        >
+        <label className="gradient-primary text-right text-lg font-medium" htmlFor="input">
           Input:
         </label>
         <input
           id="input"
-          className="border px-2 py-1 font-mono tracking-[4px] shadow-sm"
+          className="rounded border border-neutral-500 bg-neutral-800 px-2 py-1 font-mono tracking-[4px] text-neutral-100 shadow-sm"
           name="input"
           type="text"
           value={inputRaw}
@@ -85,7 +79,7 @@ const AlphabetCipher: React.FC = () => {
 
       <div className="flex justify-center gap-x-4">
         <button
-          className="bg-primary-700 hover:bg-primary-600 rounded border py-3 px-5 text-base font-bold text-white transition"
+          className="bg-primary-700 hover:bg-primary-600 rounded border-0 py-3 px-5 text-base font-bold text-white transition"
           name="encode"
           type="button"
           onClick={handleEncode}
@@ -94,7 +88,7 @@ const AlphabetCipher: React.FC = () => {
         </button>
 
         <button
-          className="bg-primary-700 hover:bg-primary-600 rounded border py-3 px-5 text-base font-bold text-white transition"
+          className="bg-primary-700 hover:bg-primary-600 rounded border-0 py-3 px-5 text-base font-bold text-white transition"
           name="decode"
           type="button"
           onClick={handleDecode}

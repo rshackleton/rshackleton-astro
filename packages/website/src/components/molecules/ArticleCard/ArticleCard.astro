@@ -16,22 +16,22 @@ const tags = orderBy(entry.data.tags);
 
 <a class="group/link outline-none" href={href} target={target}>
   <article
-    class="group-focus-visible/link:ring-primary-200 group-hover/link:ring-primary-200 block rounded-lg bg-neutral-100 p-4 outline-none group-hover/link:ring group-focus-visible/link:ring"
+    class="group-focus-visible/link:ring-primary-200 group-hover/link:ring-primary-200 block rounded-lg bg-neutral-800 p-4 outline-none group-hover/link:ring group-focus-visible/link:ring"
   >
     <h2
-      class="text-primary-800 mb-3 text-lg font-medium group-hover/link:underline group-focus-visible/link:underline"
+      class="text-primary-200 mb-3 text-lg font-medium group-hover/link:underline group-focus-visible/link:underline"
     >
       {entry.data.title}
     </h2>
-    <p class="my-0 text-sm text-neutral-700">{entry.data.summary}</p>
+    <p class="my-0 text-sm text-neutral-400">{entry.data.summary}</p>
     {
       tags && tags.length > 0 && (
-        <ul class="text-primary-600 mt-3 flex flex-wrap gap-1 font-mono text-xs uppercase">
-          <li class="bg-primary-100 rounded px-2 py-1">
+        <ul class="text-primary-200 mt-3 flex flex-wrap gap-1 font-mono text-xs font-bold uppercase">
+          <li class="bg-primary-600 rounded px-2 py-1">
             <time datetime={formatDateISO(entry.data.date)}>{formatDate(entry.data.date)}</time>
           </li>
           {tags.map((tag) => (
-            <li class="bg-primary-100 rounded px-2 py-1">{tag}</li>
+            <li class="bg-primary-600 rounded px-2 py-1">{tag}</li>
           ))}
         </ul>
       )
