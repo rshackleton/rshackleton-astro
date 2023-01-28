@@ -9,13 +9,11 @@ export default defineType({
       name: 'text',
       title: 'Text',
       type: 'string',
-      validation: (V) => V.required(),
     },
     {
       name: 'url',
       title: 'URL',
       type: 'string',
-      validation: (V) => V.required(),
     },
     {
       name: 'target',
