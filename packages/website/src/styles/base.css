@@ -29,7 +29,7 @@
         }
 
         code {
-          @apply rounded bg-neutral-200 p-1 font-mono text-base tracking-wider text-neutral-600;
+          @apply inline rounded-md bg-neutral-700 px-2 py-1 font-mono font-normal text-neutral-100 shadow-sm;
         }
       }
 

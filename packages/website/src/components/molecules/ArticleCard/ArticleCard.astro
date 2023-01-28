@@ -1,5 +1,6 @@
 ---
-import { formatDate, formatDateISO } from '@/helpers/date';
+import TagList from '@/components/atoms/TagList.astro';
+import { formatDate } from '@/helpers/date';
 import type { CollectionEntry } from 'astro:content';
 import orderBy from 'lodash/orderBy';
 
@@ -25,15 +26,10 @@ const tags = orderBy(entry.data.tags);
     </h2>
     <p class="my-0 text-sm text-neutral-400">{entry.data.summary}</p>
     {
-      tags && tags.length > 0 && (
-        <ul class="text-primary-200 mt-3 flex flex-wrap gap-1 font-mono text-xs font-bold uppercase">
-          <li class="bg-primary-600 rounded px-2 py-1">
-            <time datetime={formatDateISO(entry.data.date)}>{formatDate(entry.data.date)}</time>
-          </li>
-          {tags.map((tag) => (
-            <li class="bg-primary-600 rounded px-2 py-1">{tag}</li>
-          ))}
-        </ul>
+      tags && (
+        <div class="mt-5">
+          <TagList tags={[formatDate(entry.data.date), ...tags]} />
+        </div>
       )
     }
   </article>
