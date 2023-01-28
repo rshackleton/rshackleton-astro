@@ -28,13 +28,13 @@ const isProduction = import.meta.env.PUBLIC_VERCEL_ENV === 'production';
     <title>{seoTitle}</title>
     <meta name="description" content={seoDescription} />
   </head>
-  <body>
+  <body class="flex min-h-screen flex-col">
     <a
       class="bg-primary-700 pointer-events-none absolute top-0 left-1/2 -translate-x-[50%] p-2 text-base font-medium text-white opacity-0 focus-visible:pointer-events-auto focus-visible:opacity-100"
       href="#main">Skip to Content</a
     >
     <Header />
-    <main id="main">
+    <main id="main" class="grow">
       <slot />
     </main>
     <Footer />

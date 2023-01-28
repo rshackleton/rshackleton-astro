@@ -21,10 +21,10 @@ const { anchorId, content, cta, subtitle, tags, title } = Astro.props;
     <h1 class="pb-5 text-5xl font-bold">{title}</h1>
     {subtitle && <p class="pb-5 text-lg font-medium">{subtitle}</p>}
     {
-      tags && (
-        <ul class="flex justify-center gap-2">
+      tags && tags.length > 0 && (
+        <ul class="text-primary-600 mt-3 flex flex-wrap justify-center gap-1 font-mono text-xs uppercase">
           {orderBy(tags).map((tag) => (
-            <li class="bg-primary-50 text-primary-900 rounded py-1 px-2 font-mono">{tag}</li>
+            <li class="bg-primary-100 rounded px-2 py-1">{tag}</li>
           ))}
         </ul>
       )

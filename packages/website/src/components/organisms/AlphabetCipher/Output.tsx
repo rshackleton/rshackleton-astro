@@ -1,4 +1,5 @@
 import { animate } from 'framer-motion';
+import IconClipboard from 'heroicons/24/outline/clipboard.svg?raw';
 import { useEffect, useRef } from 'react';
 import { getCharForIndex, getCharIndex } from './cipher';
 
@@ -36,7 +37,7 @@ const OutputChar: React.FC<OutputProps> = ({ from, to }) => {
 const Output: React.FC<OutputProps> = ({ from, to }) => {
   return (
     <div className="flex gap-x-2">
-      <output className="bg-primary-50 flex cursor-default select-none items-center justify-center gap-x-2 rounded-md px-3 py-1">
+      <output className="bg-primary-50 flex cursor-default select-none items-center justify-center gap-x-1 rounded-md px-3 py-1 sm:gap-x-2">
         {Array.from(to).map((_, index) => {
           const fromChar = from[index];
           const toChar = to[index];
@@ -46,7 +47,7 @@ const Output: React.FC<OutputProps> = ({ from, to }) => {
       </output>
 
       <button
-        className="bg-primary-700 hover:bg-primary-600 rounded border py-3 px-5 text-base font-bold text-white transition"
+        className="bg-primary-700 hover:bg-primary-600 flex place-content-center place-items-center rounded border px-2 py-2 text-base font-bold text-white transition [&>svg]:w-6"
         type="button"
         onClick={async () => {
           const permissionName = 'clipboard-write' as PermissionName; // avoid incorrect ts error
@@ -56,9 +57,9 @@ const Output: React.FC<OutputProps> = ({ from, to }) => {
             navigator.clipboard.writeText(to);
           }
         }}
-      >
-        Copy
-      </button>
+        dangerouslySetInnerHTML={{ __html: IconClipboard }}
+        aria-label="Copy Output"
+      />
     </div>
   );
 };
