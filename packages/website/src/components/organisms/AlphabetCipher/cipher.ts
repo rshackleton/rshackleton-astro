@@ -1,4 +1,4 @@
-const ALPHABET = Array.from('abcdefghijklmnopqrstuvwxyz');
+export const ALPHABET = Array.from('abcdefghijklmnopqrstuvwxyz');
 
 export function encode(input: string, secret: string) {
   const chunkySecret = chunkTheSecret(secret, input.length);
@@ -60,4 +60,15 @@ export function getCharForIndex(index: number) {
 
 export function getCharIndex(char: string) {
   return ALPHABET.indexOf(char);
+}
+
+export function getCharRange(charStart: string, charEnd: string) {
+  const indexStart = ALPHABET.indexOf(charStart);
+  const indexEnd = ALPHABET.indexOf(charEnd);
+
+  if (indexStart > indexEnd) {
+    return ALPHABET.slice(indexEnd, indexStart + 1).reverse();
+  } else {
+    return ALPHABET.slice(indexStart, indexEnd + 1);
+  }
 }
