@@ -19,6 +19,9 @@ import vercel from '@astrojs/vercel/static';
 import sanity from 'astro-sanity';
 
 // https://astro.build/config
+import sitemap from '@astrojs/sitemap';
+
+// https://astro.build/config
 export default defineConfig({
   adapter: vercel(),
   integrations: [
@@ -29,8 +32,23 @@ export default defineConfig({
     }),
     react(),
     mdx({
-      rehypePlugins: [[rehypeExternalLinks, { target: '_blank' }], rehypeAccessibleEmojis],
-      remarkPlugins: [[remarkBehead, { minDepth: 2 }]],
+      rehypePlugins: [
+        [
+          rehypeExternalLinks,
+          {
+            target: '_blank',
+          },
+        ],
+        rehypeAccessibleEmojis,
+      ],
+      remarkPlugins: [
+        [
+          remarkBehead,
+          {
+            minDepth: 2,
+          },
+        ],
+      ],
     }),
     sanity({
       apiVersion: new Date().toISOString().substring(0, 10),
@@ -38,6 +56,8 @@ export default defineConfig({
       projectId: process.env.SANITY_STUDIO_PROJECT_ID,
       useCdn: true,
     }),
+    sitemap(),
   ],
   output: 'static',
+  site: 'https://rshackleton.co.uk',
 });

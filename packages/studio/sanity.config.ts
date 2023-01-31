@@ -5,7 +5,7 @@ import { schemaTypes } from './schemas';
 import home from './schemas/documents/home';
 import master from './schemas/documents/master';
 
-const schemaToHideFromStructure = [master.name, home.name];
+const schemaToHideFromStructure: string[] = [master.name, home.name];
 
 export default defineConfig({
   name: 'default',
@@ -21,7 +21,7 @@ export default defineConfig({
           .id('root')
           .items([
             S.listItem()
-              .title(master.title)
+              .title(master.title ?? '')
               .icon(master.icon)
               .child(
                 S.document().schemaType(master.name).documentId(master.name).views([S.view.form()]),
@@ -30,7 +30,7 @@ export default defineConfig({
             S.divider(),
 
             S.listItem()
-              .title(home.title)
+              .title(home.title ?? '')
               .icon(home.icon)
               .child(
                 S.document().schemaType(home.name).documentId(home.name).views([S.view.form()]),
