@@ -12,5 +12,7 @@ declare interface SectionModel {
 
 declare interface SEOModel {
   description?: string;
+  ogImage?: string;
+  ogType?: string;
   title: string;
 }

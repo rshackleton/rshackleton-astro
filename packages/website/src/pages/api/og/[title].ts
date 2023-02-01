@@ -9,16 +9,14 @@ export const get: APIRoute = async (context) => {
   await initResvgWasm();
 
   // Get parameters.
-  const { searchParams } = context.url;
-  const title = searchParams.get('title') ?? '';
-  const subtitle = searchParams.get('subtitle') ?? '';
+  const title = context.params.title ?? '';
 
   if (!title) {
     return new Response(null, { status: 404, statusText: 'Not Found' });
   }
 
   // Create markup.
-  const markup = getMarkup({ title, subtitle });
+  const markup = getMarkup(title);
 
   // Fetch fonts.
   const fonts = await fetchFonts();
@@ -69,14 +67,14 @@ async function fetchFonts(): Promise<SatoriOptions['fonts']> {
   return fonts;
 }
 
-function getMarkup(props: { title: string; subtitle: string }) {
+function getMarkup(title: string) {
   const markup = html`
     <div style="display: flex; background-color: rgb(17 24 39); fontFamily: "Open Sans"; height: 100%; padding: 24px 32px 24px; width: 100%;">
       <div style="display: flex; flex-direction: column; height: 100%;">
         <span style="background-color: rgb(79 70 229); margin-bottom: 16px; margin-right: auto; height: 4px; width: 320px;"></span>
         
         <span style="color: rgb(229 231 235); font-size: 32px; font-weight: 600; line-height: 1.2em;">
-          ${props.title}
+          ${title}
         </span>
 
         <span style="background-color: rgb(79 70 229); margin-top: 24px; margin-right: auto; height: 4px; width: 200px;"></span>
