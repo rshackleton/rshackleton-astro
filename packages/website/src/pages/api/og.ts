@@ -35,7 +35,11 @@ export const get: APIRoute = async (context) => {
   const pngData = resvg.render();
   const pngBuffer = pngData.asPng();
 
-  return new Response(pngBuffer);
+  return new Response(pngBuffer, {
+    headers: {
+      'Cache-Control': 'max-age=0, s-maxage=86400',
+    },
+  });
 };
 
 async function fetchFont(url: string) {
