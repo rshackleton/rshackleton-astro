@@ -2,9 +2,13 @@
 import ArticleList from '@/components/organisms/ArticleList/ArticleList.astro';
 import Hero from '@/components/organisms/Hero/Hero.astro';
 import Layout from '@/layouts/Layout.astro';
+
+const seo: SEOModel = {
+  title: 'Articles',
+};
 ---
 
-<Layout seo={{ title: 'Articles | Richard Shackleton' }}>
+<Layout seo={seo}>
   <Hero title="Articles" content={`My thoughts, guides and random code katas. 🧵👇`} />
   <ArticleList />
 </Layout>

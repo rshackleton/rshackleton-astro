@@ -1,8 +1,12 @@
 ---
 import Hero from '@/components/organisms/Hero/Hero.astro';
 import Layout from '@/layouts/Layout.astro';
+
+const seo: SEOModel = {
+  title: 'Page Not Found',
+};
 ---
 
-<Layout seo={{ title: 'Page Not Found | Richard Shackleton' }}>
+<Layout seo={seo}>
   <Hero title="Page Not Found" content={`Looks like I misplaced something... 😱`} />
 </Layout>

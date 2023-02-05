@@ -11,9 +11,16 @@ type Props = {
 };
 
 const { date, summary, tags, title } = Astro.props;
+
+const seo: SEOModel = {
+  title,
+  description: summary,
+  ogImage: new URL(`/api/og/${title}`, Astro.site).toString(),
+  ogType: 'article',
+};
 ---
 
-<Layout seo={{ title: title, description: summary }}>
+<Layout seo={seo}>
   <Hero title={title} subtitle={formatDate(date)} tags={tags} />
   <section class="rich-text mx-auto max-w-[80ch] px-4">
     <slot />
