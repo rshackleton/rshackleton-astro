@@ -13,7 +13,7 @@ import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 
 // https://astro.build/config
-import vercel from '@astrojs/vercel/static';
+import vercel from '@astrojs/vercel/serverless';
 
 // https://astro.build/config
 import sanity from 'astro-sanity';
@@ -58,6 +58,6 @@ export default defineConfig({
     }),
     sitemap(),
   ],
-  output: 'static',
+  output: 'server',
   site: 'https://rshackleton.co.uk',
 });
