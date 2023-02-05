@@ -2,6 +2,8 @@
 import HomePage from '@/components/templates/HomePage/HomePage.astro';
 import { getHome } from '@/sanity/home';
 
+export const prerender = true;
+
 const { sections, seo } = await getHome();
 ---
 

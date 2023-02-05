@@ -2,6 +2,8 @@
 import ArticlePage from '@/components/templates/ArticlePage/ArticlePage.astro';
 import { CollectionEntry, getCollection } from 'astro:content';
 
+export const prerender = true;
+
 type Props = {
   entry: CollectionEntry<'articles'>;
 };
