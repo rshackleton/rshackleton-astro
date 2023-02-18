@@ -52,7 +52,7 @@ const AlphabetCipher: React.FC = () => {
   return (
     <form className="mx-auto flex max-w-lg flex-col gap-y-8">
       <fieldset className="grid grid-cols-[auto,1fr] items-center gap-x-4 gap-y-4">
-        <label className="gradient-primary text-right text-lg font-medium" htmlFor="secret">
+        <label className="gradient-primary text-right font-medium text-lg" htmlFor="secret">
           Secret:
         </label>
         <input
@@ -64,7 +64,7 @@ const AlphabetCipher: React.FC = () => {
           onChange={(event) => setSecretRaw(sanitize(event.target.value))}
         />
 
-        <label className="gradient-primary text-right text-lg font-medium" htmlFor="input">
+        <label className="gradient-primary text-right font-medium text-lg" htmlFor="input">
           Input:
         </label>
         <input
@@ -79,7 +79,7 @@ const AlphabetCipher: React.FC = () => {
 
       <div className="flex justify-center gap-x-4">
         <button
-          className="bg-primary-700 hover:bg-primary-600 rounded border-0 py-3 px-5 text-base font-bold text-white transition"
+          className="rounded border-0 bg-primary-700 py-3 px-5 font-bold text-white transition text-base hover:bg-primary-600"
           name="encode"
           type="button"
           onClick={handleEncode}
@@ -88,7 +88,7 @@ const AlphabetCipher: React.FC = () => {
         </button>
 
         <button
-          className="bg-primary-700 hover:bg-primary-600 rounded border-0 py-3 px-5 text-base font-bold text-white transition"
+          className="rounded border-0 bg-primary-700 py-3 px-5 font-bold text-white transition text-base hover:bg-primary-600"
           name="decode"
           type="button"
           onClick={handleDecode}

@@ -1,0 +1,124 @@
+---
+import {
+  createDeliveryClient,
+  Elements,
+  IContentItem,
+  transformImageUrl,
+} from '@kontent-ai/delivery-sdk';
+import type { IDomNode } from '@pokornyd/kontent-ai-rich-text-parser';
+import { RichTextNodeParser } from '@pokornyd/kontent-ai-rich-text-parser/dist/src/parser/node/index';
+import { isImage, isLinkedItem } from '@pokornyd/kontent-ai-rich-text-parser/dist/src/utils/index';
+import htm from 'htm';
+import vhtml from 'vhtml';
+
+type ContentPage = IContentItem<{
+  body_content: Elements.RichTextElement;
+}>;
+
+type ExampleSlice = IContentItem<{
+  title: Elements.TextElement;
+}>;
+
+const html = htm.bind(vhtml);
+
+const client = createDeliveryClient({
+  projectId: process.env.KONTENT_PROJECT_ID ?? '',
+});
+
+const result = await client.item<ContentPage>('demo_for_portable_text').toPromise();
+const { item, linkedItems } = result.data;
+const content = item.elements.body_content;
+
+const parser = new RichTextNodeParser();
+const parsed = parser.parse(content.value);
+
+const output = parsed.children.flatMap(resolveNode).join('');
+
+/** Quick and dirty straight-to-html resolver. */
+function resolveNode(node: IDomNode): string | string[] {
+  if (node.type === 'tag') {
+    if (isLinkedItem(node)) {
+      const linkedItemCodeName = node.attributes['data-codename'];
+      const linkedItem = linkedItems[linkedItemCodeName] as ExampleSlice;
+
+      if (!linkedItem) {
+        return '';
+      }
+
+      return html`
+        <div id="${linkedItem.system.codename}" class="rounded bg-primary-900 p-4">
+          <h3 class="mb-4 font-medium text-xl">
+            <span>${linkedItem.elements.title.value}</span>
+          </h3>
+          <p class="text-primary-50 text-base">
+            This block is a reference to a separate content item within Kontent.ai.
+          </p>
+        </div>
+      `;
+    }
+
+    if (isImage(node)) {
+      const imageId = node.attributes['data-asset-id'];
+      const image = content.images.find((image) => image.imageId === imageId);
+
+      if (!image) {
+        return '';
+      }
+
+      return html`
+        <figure class="rounded bg-primary-900 p-4">
+          <img
+            class="rounded"
+            alt="${image.description}"
+            src="${transformImageUrl(image.url).withWidth(940).getUrl()}"
+            height="${image.height}"
+            width="${image.width}"
+          />
+          <figcaption class="mt-4 pl-2 text-base">${image.description}</figcaption>
+        </figure>
+      `;
+    }
+
+    const attrs = Object.entries(node.attributes)
+      .map(([name, value]) => `${name}="${value}"`)
+      .join(' ');
+
+    return html`
+      <${node.tagName} ${attrs}>
+        ${node.children.flatMap(resolveNode)}
+      </${node.tagName}>
+    `;
+  }
+
+  if (node.type === 'text') {
+    return node.content;
+  }
+
+  return '';
+}
+---
+
+<details class="text-base" open>
+  <summary class="mb-4 cursor-pointer font-medium hover:underline focus-visible:underline">
+    Resolved HTML
+  </summary>
+  <div class="rich-text" set:html={output} />
+</details>
+
+<details class="text-base" open>
+  <summary class="mb-4 cursor-pointer font-medium hover:underline focus-visible:underline">
+    Original HTML from Kontent.ai JS SDK
+  </summary>
+  <pre
+    class="max-h-[min(1000px,80vh)] overflow-auto rounded bg-gray-800 p-4 text-sm">{content.value}</pre>
+</details>
+
+<details class="text-base" open>
+  <summary class="mb-4 cursor-pointer font-medium hover:underline focus-visible:underline">
+    Data parsed using <code class="rounded bg-gray-800 p-1"
+      >@pokornyd/kontent-ai-rich-text-parser</code
+    >
+  </summary>
+  <pre
+    class="max-h-[min(1000px,80vh)] overflow-auto rounded bg-gray-800 p-4 text-sm">{JSON.stringify(parsed, null, 2)}</pre>
+</details>

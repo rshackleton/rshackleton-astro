@@ -1,5 +1,4 @@
 {
-  "name": "@rshackleton/root",
   "private": true,
   "scripts": {
     "build": "dotenv -- turbo run build",
@@ -8,15 +7,14 @@
     "format": "turbo run format",
     "lint": "turbo run lint"
   },
-  "workspaces": [
-    "./packages/*"
-  ],
   "devDependencies": {
+    "@astrojs/compiler": "^1.1.1",
     "dotenv-cli": "7.0.0",
     "eslint": "8.32.0",
     "prettier": "2.8.3",
     "prettier-plugin-astro": "0.7.2",
     "prettier-plugin-tailwindcss": "0.2.1",
     "turbo": "1.7.1"
-  }
+  },
+  "packageManager": "pnpm@7.27.0"
 }

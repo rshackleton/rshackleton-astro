@@ -21,15 +21,18 @@
     "@astrojs/sitemap": "1.0.1",
     "@astrojs/tailwind": "3.0.0",
     "@astrojs/vercel": "3.0.0",
+    "@kontent-ai/delivery-sdk": "^12.4.2",
+    "@pokornyd/kontent-ai-rich-text-parser": "^0.0.12",
     "@rshackleton/astro-portabletext": "0.1.0",
-    "@types/react": "18.0.21",
-    "@types/react-dom": "18.0.6",
+    "@sanity/client": "^5.2.1",
     "@vercel/analytics": "0.1.8",
     "astro": "2.0.1",
     "astro-sanity": "1.1.2",
     "framer-motion": "8.5.4",
     "groq": "3.2.4",
     "heroicons": "2.0.14",
+    "htm": "^3.1.1",
+    "lodash": "^4.17.21",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "rehype-accessible-emojis": "0.3.2",
@@ -37,15 +40,21 @@
     "remark-behead": "3.1.0",
     "tailwindcss": "3.2.4",
     "tailwindcss-fluid-type": "2.0.3",
+    "vhtml": "^2.2.0",
     "web-vitals": "3.1.1"
   },
   "devDependencies": {
+    "@types/react": "18.0.21",
+    "@types/react-dom": "18.0.6",
+    "@types/vhtml": "^2.2.4",
     "@typescript-eslint/parser": "5.48.2",
     "eslint": "8.32.0",
     "eslint-config-prettier": "8.6.0",
     "eslint-plugin-astro": "0.23.0",
     "eslint-plugin-jsx-a11y": "6.7.1",
     "eslint-plugin-mdx": "2.0.5",
-    "prettier": "2.8.3"
+    "prettier": "2.8.3",
+    "prettier-plugin-astro": "0.7.2",
+    "prettier-plugin-tailwindcss": "0.2.1"
   }
 }

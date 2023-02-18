@@ -15,12 +15,12 @@
       @apply mb-8;
 
       &:is(h1, h2, h3, h4, h5, h6) {
-        @apply from-primary-400 to-primary-300 bg-gradient-to-r bg-clip-text text-xl font-bold text-transparent;
+        @apply bg-gradient-to-r from-primary-400 to-primary-300 bg-clip-text font-bold text-transparent text-xl;
       }
 
       &:is(p) {
         a {
-          @apply from-primary-400 to-primary-300 hover:border-primary-400 border-b-2 border-transparent bg-gradient-to-r bg-clip-text font-medium text-transparent transition;
+          @apply border-b-2 border-transparent bg-gradient-to-r from-primary-400 to-primary-300 bg-clip-text font-medium text-transparent transition hover:border-primary-400;
         }
 
         b,
@@ -37,7 +37,7 @@
         @apply ml-6;
 
         a {
-          @apply from-primary-400 to-primary-300 hover:border-primary-400 border-b-2 border-transparent bg-gradient-to-r bg-clip-text font-medium text-transparent transition;
+          @apply border-b-2 border-transparent bg-gradient-to-r from-primary-400 to-primary-300 bg-clip-text font-medium text-transparent transition hover:border-primary-400;
         }
       }
 
@@ -69,10 +69,10 @@
 
 @layer utilities {
   .gradient-primary {
-    @apply from-primary-400 to-primary-300 bg-gradient-to-r bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary-400 to-primary-300 bg-clip-text text-transparent;
   }
 
   .gradient-primary-hover {
-    @apply from-primary-400 to-primary-300 hover:border-primary-400 border-b-2 border-transparent bg-gradient-to-r bg-clip-text text-transparent transition-colors;
+    @apply border-b-2 border-transparent bg-gradient-to-r from-primary-400 to-primary-300 bg-clip-text text-transparent transition-colors hover:border-primary-400;
   }
 }

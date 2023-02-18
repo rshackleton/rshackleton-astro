@@ -68,7 +68,7 @@ const Output: React.FC<OutputProps> = ({ from, to }) => {
         </div>
 
         <button
-          className="bg-primary-700 hover:bg-primary-600 flex place-content-center place-items-center rounded border-0 px-2 py-2 text-base font-bold text-white transition [&>svg]:w-6"
+          className="flex place-content-center place-items-center rounded border-0 bg-primary-700 px-2 py-2 font-bold text-white transition text-base hover:bg-primary-600 [&>svg]:w-6"
           type="button"
           onClick={async () => {
             const permissionName = 'clipboard-write' as PermissionName; // avoid incorrect ts error
