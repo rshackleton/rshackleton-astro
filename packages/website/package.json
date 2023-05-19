@@ -3,9 +3,6 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "engines": {
-    "node": "18.*"
-  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -22,14 +19,15 @@
     "@astrojs/tailwind": "3.0.0",
     "@astrojs/vercel": "3.0.0",
     "@rshackleton/astro-portabletext": "0.1.0",
+    "@sanity/client": "^6.1.1",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
     "@vercel/analytics": "0.1.8",
     "astro": "2.0.1",
-    "astro-sanity": "1.1.2",
     "framer-motion": "8.5.4",
     "groq": "3.2.4",
     "heroicons": "2.0.14",
+    "lodash": "^4.17.21",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "rehype-accessible-emojis": "0.3.2",
@@ -47,5 +45,9 @@
     "eslint-plugin-jsx-a11y": "6.7.1",
     "eslint-plugin-mdx": "2.0.5",
     "prettier": "2.8.3"
-  }
+  },
+  "engines": {
+    "node": "18.*"
+  },
+  "packageManager": "pnpm@8.5.1"
 }
