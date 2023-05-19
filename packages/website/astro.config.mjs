@@ -16,9 +16,6 @@ import mdx from '@astrojs/mdx';
 import vercel from '@astrojs/vercel/serverless';
 
 // https://astro.build/config
-import sanity from 'astro-sanity';
-
-// https://astro.build/config
 import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
@@ -49,12 +46,6 @@ export default defineConfig({
           },
         ],
       ],
-    }),
-    sanity({
-      apiVersion: new Date().toISOString().substring(0, 10),
-      dataset: process.env.SANITY_STUDIO_DATASET,
-      projectId: process.env.SANITY_STUDIO_PROJECT_ID,
-      useCdn: true,
     }),
     sitemap(),
   ],

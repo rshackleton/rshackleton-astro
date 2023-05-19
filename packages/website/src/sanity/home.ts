@@ -1,4 +1,4 @@
-import { useSanityClient } from 'astro-sanity';
+import { createClient } from '@sanity/client';
 import groq from 'groq';
 import { sections } from './sections';
 
@@ -10,7 +10,12 @@ export type HomeModel = {
 };
 
 export async function getHome() {
-  const client = useSanityClient();
+  const client = createClient({
+    apiVersion: new Date().toISOString().substring(0, 10),
+    dataset: import.meta.env.SANITY_STUDIO_DATASET,
+    projectId: import.meta.env.SANITY_STUDIO_PROJECT_ID,
+    useCdn: true,
+  });
 
   const data = await client.fetch(
     groq`
