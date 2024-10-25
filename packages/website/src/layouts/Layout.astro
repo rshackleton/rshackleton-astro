@@ -14,8 +14,6 @@ const { seo: masterSeo } = await getMaster();
 
 const seoTitle = `${pageSeo?.title ?? ''} | ${masterSeo?.title ?? ''}`;
 const seoDescription = pageSeo?.description ?? masterSeo?.description ?? '';
-
-const isProduction = import.meta.env.PUBLIC_VERCEL_ENV === 'production';
 ---
 
 <!DOCTYPE html>
@@ -38,6 +36,6 @@ const isProduction = import.meta.env.PUBLIC_VERCEL_ENV === 'production';
       <slot />
     </main>
     <Footer />
-    {isProduction && <SpeedInsights />}
+    <SpeedInsights />
   </body>
 </html>
