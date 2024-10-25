@@ -50,5 +50,5 @@ export default defineConfig({
     sitemap(),
   ],
   output: 'server',
-  site: 'https://rshackleton.co.uk',
+  site: 'https://rshackleton.dev',
 });
