@@ -1,9 +1,9 @@
 ---
 import Footer from '@/components/organisms/Footer/Footer.astro';
 import Header from '@/components/organisms/Header/Header.astro';
-import TrackVitals from '@/components/organisms/TrackVitals/TrackVitals.astro';
 import { getMaster } from '@/sanity/master';
 import '@/styles/base.css';
+import SpeedInsights from "@vercel/speed-insights/astro";
 
 export interface Props {
   seo: SEOModel;
@@ -38,6 +38,6 @@ const isProduction = import.meta.env.PUBLIC_VERCEL_ENV === 'production';
       <slot />
     </main>
     <Footer />
-    {isProduction && <TrackVitals />}
+    {isProduction && <SpeedInsights />}
   </body>
 </html>
