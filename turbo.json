@@ -9,13 +9,8 @@
     },
     "@rshackleton/website#build": {
       "dependsOn": ["^build"],
-      "env": [
-        "SANITY_STUDIO_DATASET",
-        "SANITY_STUDIO_PROJECT_ID",
-        "PUBLIC_VERCEL_ANALYTICS_ID",
-        "PUBLIC_VERCEL_ENV"
-      ],
-      "outputs": [".vercel/**"]
+      "env": ["SANITY_STUDIO_DATASET", "SANITY_STUDIO_PROJECT_ID"],
+      "outputs": ["dist/**"]
     },
     "@rshackleton/studio#dev": {
       "env": ["SANITY_STUDIO_DATASET", "SANITY_STUDIO_PROJECT_ID"],
@@ -23,12 +18,7 @@
       "persistent": true
     },
     "@rshackleton/website#dev": {
-      "env": [
-        "SANITY_STUDIO_DATASET",
-        "SANITY_STUDIO_PROJECT_ID",
-        "PUBLIC_VERCEL_ANALYTICS_ID",
-        "PUBLIC_VERCEL_ENV"
-      ],
+      "env": ["SANITY_STUDIO_DATASET", "SANITY_STUDIO_PROJECT_ID"],
       "cache": false,
       "persistent": true
     },

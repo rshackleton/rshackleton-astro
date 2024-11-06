@@ -1,26 +1,15 @@
+import cloudflare from '@astrojs/cloudflare';
+import mdx from '@astrojs/mdx';
+import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
+import tailwind from '@astrojs/tailwind';
 import { defineConfig } from 'astro/config';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 import rehypeExternalLinks from 'rehype-external-links';
 import remarkBehead from 'remark-behead';
 
-// https://astro.build/config
-import tailwind from '@astrojs/tailwind';
-
-// https://astro.build/config
-import react from '@astrojs/react';
-
-// https://astro.build/config
-import mdx from '@astrojs/mdx';
-
-// https://astro.build/config
-import vercel from '@astrojs/vercel/serverless';
-
-// https://astro.build/config
-import sitemap from '@astrojs/sitemap';
-
-// https://astro.build/config
 export default defineConfig({
-  adapter: vercel(),
+  adapter: cloudflare(),
   integrations: [
     tailwind({
       config: {
