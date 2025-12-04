@@ -10,21 +10,21 @@ type Props = {
 
 const { entry } = Astro.props;
 
-const href = entry.data.external ?? `/articles/${entry.slug}`;
+const href = entry.data.external ?? `/articles/${entry.id}`;
 const target = entry.data.external ? '_blank' : undefined;
 const tags = orderBy(entry.data.tags);
 ---
 
 <a class="group/link outline-none" href={href} target={target}>
   <article
-    class="group-focus-visible/link:ring-primary-200 group-hover/link:ring-primary-200 block rounded-lg bg-neutral-800 p-4 outline-none group-hover/link:ring group-focus-visible/link:ring"
+    class="block rounded-lg bg-neutral-800 p-4 outline-none group-hover/link:ring group-hover/link:ring-primary-200 group-focus-visible/link:ring group-focus-visible/link:ring-primary-200"
   >
     <h2
-      class="text-primary-200 mb-3 text-lg font-medium group-hover/link:underline group-focus-visible/link:underline"
+      class="mb-3 font-medium text-primary-200 text-lg group-hover/link:underline group-focus-visible/link:underline"
     >
       {entry.data.title}
     </h2>
-    <p class="my-0 text-sm text-neutral-400">{entry.data.summary}</p>
+    <p class="my-0 text-neutral-400 text-sm">{entry.data.summary}</p>
     {
       tags && (
         <div class="mt-5">

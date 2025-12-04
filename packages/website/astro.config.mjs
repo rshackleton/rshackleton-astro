@@ -13,7 +13,7 @@ import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 
 // https://astro.build/config
-import vercel from '@astrojs/vercel/serverless';
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 import sitemap from '@astrojs/sitemap';

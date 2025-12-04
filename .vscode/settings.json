@@ -1,24 +1,10 @@
 {
-  "eslint.execArgv": ["--max_old_space_size=8192"],
-  "eslint.options": {
-    "extensions": [".astro", ".js", ".jsx", ".md", ".mdx", ".ts", ".tsx"]
-  },
-  "eslint.runtime": "node",
-  "eslint.validate": [
-    "astro",
-    "javascript",
-    "javascriptreact",
-    "markdown",
-    "mdx",
-    "typescript",
-    "typescriptreact"
-  ],
-  "mdx.experimentalLanguageServer": true,
   "prettier.documentSelectors": ["**/*.astro"],
   "[astro]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "prettier.prettier-vscode"
   },
   "[mdx]": {
     "editor.wordWrap": "on"
-  }
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

@@ -13,7 +13,7 @@
     "incremental": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["node", "vite/client"],
+    "types": ["node"],
     "jsx": "preserve"
   },
   "include": ["**/*.ts", "**/*.tsx"],

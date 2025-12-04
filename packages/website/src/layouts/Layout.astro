@@ -3,7 +3,7 @@ import Footer from '@/components/organisms/Footer/Footer.astro';
 import Header from '@/components/organisms/Header/Header.astro';
 import { getMaster } from '@/sanity/master';
 import '@/styles/base.css';
-import SpeedInsights from "@vercel/speed-insights/astro";
+import SpeedInsights from '@vercel/speed-insights/astro';
 
 export interface Props {
   seo: SEOModel;
@@ -16,7 +16,7 @@ const seoTitle = `${pageSeo?.title ?? ''} | ${masterSeo?.title ?? ''}`;
 const seoDescription = pageSeo?.description ?? masterSeo?.description ?? '';
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -28,7 +28,7 @@ const seoDescription = pageSeo?.description ?? masterSeo?.description ?? '';
   </head>
   <body class="flex min-h-screen flex-col">
     <a
-      class="bg-primary-700 pointer-events-none absolute top-0 left-1/2 -translate-x-[50%] p-2 text-base font-medium text-white opacity-0 focus-visible:pointer-events-auto focus-visible:opacity-100"
+      class="pointer-events-none absolute left-1/2 top-0 -translate-x-[50%] bg-primary-700 p-2 font-medium text-white opacity-0 text-base focus-visible:pointer-events-auto focus-visible:opacity-100"
       href="#main">Skip to Content</a
     >
     <Header />

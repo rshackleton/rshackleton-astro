@@ -1,6 +1,6 @@
 ---
 import ArticlePage from '@/components/templates/ArticlePage/ArticlePage.astro';
-import { CollectionEntry, getCollection } from 'astro:content';
+import { type CollectionEntry, getCollection, render } from 'astro:content';
 
 export const prerender = true;
 
@@ -12,13 +12,13 @@ export async function getStaticPaths() {
   const articles = await getCollection('articles', (entry) => !entry.data.external);
 
   return articles.map((entry) => ({
-    params: { slug: entry.slug },
+    params: { slug: entry.id },
     props: { entry },
   }));
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 
 const { date, summary, tags, title } = entry.data;
 ---
