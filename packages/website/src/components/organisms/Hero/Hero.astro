@@ -18,8 +18,8 @@ const { anchorId, content, cta, subtitle, tags, title } = Astro.props;
   class="relative my-[max(64px,4vw)] grid place-content-center place-items-center overflow-hidden"
 >
   <div class="relative mx-auto flex w-full flex-col items-center px-4 text-center">
-    <h1 class="max-w-[24ch] text-5xl font-bold">{title}</h1>
-    {subtitle && <p class="mt-3 text-lg font-medium">{subtitle}</p>}
+    <h1 class="max-w-[24ch] font-bold text-5xl">{title}</h1>
+    {subtitle && <p class="mt-3 font-medium text-lg">{subtitle}</p>}
     {
       tags && (
         <div class="mt-5">
@@ -31,7 +31,7 @@ const { anchorId, content, cta, subtitle, tags, title } = Astro.props;
     {
       cta && cta.url && (
         <a
-          class="bg-primary-700 hover:bg-primary-600 mt-8 inline-block scale-100 rounded py-3 px-5 text-base font-bold text-white subpixel-antialiased transition will-change-transform hover:scale-110"
+          class="mt-8 inline-block scale-100 rounded bg-primary-700 px-5 py-3 font-bold text-white subpixel-antialiased transition will-change-transform text-base hover:scale-110 hover:bg-primary-600"
           href={cta.url}
           target={cta.target}
         >

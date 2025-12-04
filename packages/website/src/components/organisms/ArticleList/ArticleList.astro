@@ -17,7 +17,7 @@ const slice = orderBy(items, ['data.date'], ['desc']).slice(0, count);
 ---
 
 <section id={anchorId} class="mx-auto my-[max(64px,4vw)] max-w-[80ch] px-4">
-  {title && <h2 class="mb-[1em] text-center text-3xl font-bold">{title}</h2>}
+  {title && <h2 class="mb-[1em] text-center font-bold text-3xl">{title}</h2>}
   <ul class="flex flex-col gap-x-4 gap-y-6">
     {
       slice.map((entry) => (
@@ -31,7 +31,7 @@ const slice = orderBy(items, ['data.date'], ['desc']).slice(0, count);
     cta && (
       <div class="mt-8 flex place-content-center place-items-center">
         <a
-          class="bg-primary-700 hover:bg-primary-600 inline-block scale-100 rounded py-3 px-5 text-base font-bold text-white subpixel-antialiased transition will-change-transform hover:scale-110"
+          class="inline-block scale-100 rounded bg-primary-700 px-5 py-3 font-bold text-white subpixel-antialiased transition will-change-transform text-base hover:scale-110 hover:bg-primary-600"
           href={cta.url}
           target={cta.target}
         >
