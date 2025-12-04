@@ -1,32 +1,17 @@
+import mdx from '@astrojs/mdx';
+import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
+import vercel from '@astrojs/vercel';
+import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 import rehypeExternalLinks from 'rehype-external-links';
 import remarkBehead from 'remark-behead';
 
-// https://astro.build/config
-import tailwind from '@astrojs/tailwind';
-
-// https://astro.build/config
-import react from '@astrojs/react';
-
-// https://astro.build/config
-import mdx from '@astrojs/mdx';
-
-// https://astro.build/config
-import vercel from '@astrojs/vercel';
-
-// https://astro.build/config
-import sitemap from '@astrojs/sitemap';
-
-// https://astro.build/config
 export default defineConfig({
   adapter: vercel(),
+
   integrations: [
-    tailwind({
-      config: {
-        applyBaseStyles: false,
-      },
-    }),
     react(),
     mdx({
       rehypePlugins: [
@@ -49,6 +34,11 @@ export default defineConfig({
     }),
     sitemap(),
   ],
+
   output: 'server',
   site: 'https://rshackleton.dev',
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });

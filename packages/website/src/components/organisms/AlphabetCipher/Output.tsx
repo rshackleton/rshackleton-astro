@@ -78,6 +78,7 @@ const Output: React.FC<OutputProps> = ({ from, to }) => {
               navigator.clipboard.writeText(to);
             }
           }}
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: reference to trusted SVG
           dangerouslySetInnerHTML={{ __html: IconClipboard }}
           aria-label="Copy Output"
         />

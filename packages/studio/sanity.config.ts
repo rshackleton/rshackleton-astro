@@ -16,7 +16,7 @@ export default defineConfig({
 
   plugins: [
     deskTool({
-      structure: (S, context) =>
+      structure: (S) =>
         S.list()
           .id('root')
           .items([

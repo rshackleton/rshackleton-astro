@@ -1,8 +1,8 @@
 ---
-import TagList from '@/components/atoms/TagList.astro';
-import { formatDate } from '@/helpers/date';
 import type { CollectionEntry } from 'astro:content';
 import orderBy from 'lodash/orderBy';
+import TagList from '@/components/atoms/TagList.astro';
+import { formatDate } from '@/helpers/date';
 
 type Props = {
   entry: CollectionEntry<'articles'>;

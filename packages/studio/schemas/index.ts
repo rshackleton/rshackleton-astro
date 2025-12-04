@@ -1,4 +1,4 @@
-import { SchemaTypeDefinition } from 'sanity';
+import type { SchemaTypeDefinition } from 'sanity';
 import home from './documents/home';
 import master from './documents/master';
 import cta from './objects/cta';
