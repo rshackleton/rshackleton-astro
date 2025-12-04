@@ -8,6 +8,7 @@ interface Props extends SectionModel {}
 
 const { _type, ...otherProps } = Astro.props;
 
+// biome-ignore lint/suspicious/noExplicitAny: necesary for dynamic component mapping
 const COMPONENT_MAP: Record<string, any> = {
   articleList: ArticleList,
   bio: Bio,

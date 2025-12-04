@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@config "../../tailwind.config.cjs";
 
 /* Custom rich text */
 @layer base {
@@ -54,9 +54,6 @@
 
         &::-webkit-scrollbar {
           @apply h-2 w-2;
-        }
-
-        &::-webkit-scrollbar-track {
         }
 
         &::-webkit-scrollbar-thumb {

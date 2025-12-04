@@ -1,10 +1,14 @@
 {
-  "prettier.documentSelectors": ["**/*.astro"],
   "[astro]": {
-    "editor.defaultFormatter": "prettier.prettier-vscode"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[mdx]": {
     "editor.wordWrap": "on"
   },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "always"
+  },
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
   "typescript.tsdk": "node_modules/typescript/lib"
 }
